@@ -1,0 +1,280 @@
+.section {
+    padding: 6rem 0;
+    background-color: var(--color-bg-dark);
+    /* Soft background gradient or pattern could be added here */
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, minmax(100px, auto));
+    gap: 1.5rem;
+}
+
+.card {
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cardContent {
+    position: relative;
+    z-index: 2;
+}
+
+.cardTitle {
+    font-family: 'Outfit', sans-serif;
+    /* Assuming font stack */
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.cardText {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.cardIcon {
+    margin-bottom: 1rem;
+    width: 40px;
+    height: 40px;
+}
+
+/* Card Variants */
+.whiteCard {
+    background-color: white;
+    color: var(--color-bg-dark);
+    /* Dark text on white */
+}
+
+.whiteCard .cardTitle {
+    color: #3B82F6;
+    /* Light Blue approximate */
+}
+
+.blueCard {
+    background-color: #2299DD;
+    /* Approximate Blue from image */
+    color: white;
+}
+
+.imageCard {
+    padding: 0;
+}
+
+.imageCard img,
+.imageCard video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Specific Grid Placements */
+/* Col 1 */
+.card1 {
+    grid-column: 1;
+    grid-row: 1;
+    justify-content: flex-start;
+}
+
+/* Title Card */
+.card2 {
+    grid-column: 1;
+    grid-row: 2 / 3;
+    background: #0085C8;
+    /* Approximate background color of the image */
+}
+
+.card2 img {
+    object-fit: contain;
+}
+
+/* Girls Image (Spans 2 rows) */
+/* Girls Image (Spans 2 rows) */
+.col1Stack {
+    grid-column: 1;
+    grid-row: 3 / 5;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.card3 {
+    padding: 1rem;
+    /* Less padding = shorter card */
+    /* OR */
+    min-height: 420px;
+    /* Force minimum height */
+}
+
+/* Expertly Crafted */
+
+/* Col 2 */
+.card4 {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+/* True Flavors */
+.card5 {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+/* Celebrating Tradition */
+.card6 {
+    grid-column: 2;
+    grid-row: 3 / 5;
+}
+
+/* Pouring Video (Spans 2 rows) */
+.card6 {
+    grid-column: 2;
+    grid-row: 3 / 4;
+    background: #000;
+    /* Dark bg for video */
+}
+
+.card6 img,
+.card6 video {
+    object-fit: cover;
+}
+
+/* Col 3 */
+/* Col 3 */
+.card7 {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    background: #0085C8;
+    /* Match blue background */
+}
+
+.card7 img {
+    object-fit: contain;
+}
+
+/* Box Image (Spans 2 rows) */
+.card8 {
+    grid-column: 3;
+    grid-row: 3;
+}
+
+/* Always Fresh */
+/* Always Fresh */
+.card9 {
+    /* No specific grid placement needed as it's in the stack */
+    align-self: start;
+    height: auto;
+}
+
+/* Finest Quality */
+
+/* Typography Overrides for Text Cards */
+.card1 h2 {
+    font-family: 'Playfair Display', serif;
+    /* Or script font if available */
+    font-size: 2.5rem;
+    color: #2299DD;
+    margin-bottom: 0.5rem;
+    font-style: italic;
+}
+
+.card1 p {
+    color: #2299DD;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+        /* Reset explicit rows */
+    }
+
+    /* Reset spans for tablet - maybe keep some */
+    .card2,
+    .card6,
+    .card7 {
+        grid-row: span 2;
+    }
+
+    /* Reorder for flow if needed, but grid-auto-flow might handle it */
+    .card1 {
+        grid-column: 1 / -1;
+    }
+
+    /* Header spans full width */
+    .card2 {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .card3 {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .card4 {
+        grid-column: 2;
+        grid-row: auto;
+    }
+
+    .card5 {
+        grid-column: 2;
+        grid-row: auto;
+    }
+
+    .card6 {
+        grid-column: 2;
+        grid-row: span 2;
+    }
+
+    .card7 {
+        grid-column: 1;
+        grid-row: span 2;
+    }
+
+    .card8 {
+        grid-column: 2;
+        grid-row: auto;
+    }
+
+    .card9 {
+        grid-column: 1;
+        grid-row: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .card {
+        min-height: 200px;
+        /* Ensure images have height */
+    }
+
+    .card1 h2 {
+        font-size: 2rem;
+    }
+}

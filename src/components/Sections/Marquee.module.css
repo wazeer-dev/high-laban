@@ -1,0 +1,63 @@
+.marqueeSection {
+    width: 100%;
+    background-color: #ffffff;
+    overflow: hidden;
+    padding: 1rem 0;
+    position: relative;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    white-space: nowrap;
+    margin-top: 2rem;
+}
+
+.marqueeTrack {
+    display: inline-flex;
+    animation: scroll 20s linear infinite;
+    width: max-content;
+    /* Ensure the track is wide enough to hold the content */
+}
+
+.marqueeContent {
+    display: flex;
+    align-items: center;
+}
+
+.text {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin: 0 1rem;
+    font-family: 'Inter', sans-serif;
+    /* Adjust if project uses specific font */
+}
+
+.star {
+    color: #00bfff;
+    /* Light blue star color from image */
+    font-size: 1rem;
+    margin: 0 1rem;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        /* Move by the width of one content chunk. 
+           Since we have 3 chunks, and we want to move by 1/3 of the total width 
+           (which is the width of one chunk) to create the seamless loop. 
+           However, simpler is to just define translate based on percentage if all chunks are equal.
+           Width of track is 300% of one chunk. We move -33.333%? 
+           Actually, the easiest way for seamless pure CSS is to have 2 identical copies 
+           and translate -50% of the container if the container holds exactly 2 copies.
+           Here we have 3. Let's adjust the keyframes.
+        */
+        transform: translateX(-33.33%);
+    }
+}
+
+/* Hover to pause */
+.marqueeSection:hover .marqueeTrack {
+    animation-play-state: paused;
+}

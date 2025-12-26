@@ -1,0 +1,220 @@
+.heroContainer {
+    height: 600vh;
+    /* Determines scroll length */
+    background: var(--color-bg-dark);
+    position: relative;
+}
+
+.stickyWrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+}
+
+.heroCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+}
+
+.loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg-dark);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-primary);
+}
+
+.loadingContent {
+    text-align: center;
+    width: 300px;
+}
+
+.loadingBar {
+    width: 100%;
+    height: 4px;
+    background: var(--color-border);
+    margin: 20px 0;
+    border-radius: 2px;
+}
+
+.loadingBar div {
+    height: 100%;
+    background: var(--color-accent);
+    transition: width 0.1s linear;
+}
+
+.overlayContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Let clicks pass through if needed, but text needs interaction? Usually Hero text is static or buttons */
+    /* If buttons, then pointer-events: auto on children */
+}
+
+.leftBlock {
+    position: absolute;
+    top: 15vh;
+    left: 5vw;
+    text-align: left;
+    max-width: 40vw;
+}
+
+.introLine {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+}
+
+.mainTitle {
+    color: var(--color-accent);
+    font-size: clamp(3rem, 6vw, 6rem);
+    line-height: 1.1;
+    text-transform: none;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.skillRow {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.skillItem {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.skillItem span {
+    color: var(--color-text-primary);
+    font-weight: bold;
+    font-family: var(--font-display);
+}
+
+.rightBlock {
+    position: absolute;
+    top: 35vh;
+    right: 5vw;
+    text-align: right;
+    max-width: 35vw;
+}
+
+.subHeadline {
+    font-size: 2rem;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+}
+
+.supportingText {
+    color: #ffffff;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.bottomSocial {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 2rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.bottomSocial a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.bottomSocial a:hover {
+    color: var(--color-accent);
+}
+
+@media (max-width: 1024px) {
+    .mainTitle {
+        font-size: 4rem;
+    }
+
+    .leftBlock {
+        max-width: 50vw;
+    }
+
+    .rightBlock {
+        max-width: 45vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .leftBlock {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        max-width: 100%;
+        padding: 0 1.5rem;
+        margin-top: 15vh;
+        text-align: center;
+    }
+
+    .introLine {
+        font-size: 1.2rem;
+    }
+
+    .mainTitle {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .skillRow {
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .rightBlock {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        max-width: 100%;
+        padding: 0 1.5rem;
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .subHeadline {
+        font-size: 1.5rem;
+    }
+
+    .bottomSocial {
+        width: 100%;
+        justify-content: center;
+        gap: 1rem;
+        font-size: 0.8rem;
+    }
+}

@@ -1,0 +1,36 @@
+:root {
+  /* Brand Colors */
+  --color-accent: #007BFF;
+  /* Blue */
+  --color-accent-glow: rgba(0, 123, 255, 0.5);
+
+  /* Neutral Colors */
+  --color-bg-dark: #FFFFFF;
+  /* White */
+  --color-bg-card: #F9F9F9;
+  /* Light Gray */
+  --color-text-primary: #111111;
+  /* Black/Dark Gray */
+  --color-text-secondary: #555555;
+  /* Medium Gray */
+  --color-border: #E5E5E5;
+  /* Light Gray */
+
+  /* Typography */
+  --font-primary: 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  /* Animation */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
