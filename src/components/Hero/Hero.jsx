@@ -32,6 +32,22 @@ export default function Hero() {
     // Effect to handle initial load (optional, if we want to wait for just frame 0)
     // But immediate render is better.
 
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+    // Handle Resize
+    useEffect(() => {
+        const handleResize = () => {
+            if (canvasRef.current) {
+                canvasRef.current.width = window.innerWidth;
+                canvasRef.current.height = window.innerHeight;
+                setDimensions({ width: window.innerWidth, height: window.innerHeight });
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     // Render Frame to Canvas
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -73,21 +89,7 @@ export default function Hero() {
             ctx.clearRect(0, 0, width, height);
             ctx.drawImage(currentImage, offsetX, offsetY, drawWidth, drawHeight);
         }
-    }, [progress, images, imagesLoaded]); // Re-run when more images load (to potentially fill missing frames)
-
-
-    // Handle Resize
-    useEffect(() => {
-        const handleResize = () => {
-            if (canvasRef.current) {
-                canvasRef.current.width = window.innerWidth;
-                canvasRef.current.height = window.innerHeight;
-            }
-        };
-        window.addEventListener('resize', handleResize);
-        handleResize();
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    }, [progress, images, imagesLoaded, dimensions]); // Re-run when size changes
 
 
     return (
