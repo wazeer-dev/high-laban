@@ -40,8 +40,8 @@ const POS = () => {
                     : item
             ));
         } else {
-            // Assign a random price for demo if not present, or fixed price
-            const price = 120.00;
+            // Use product price or default if missing
+            const price = product.price ? parseFloat(product.price) : 120.00;
             setCart([...cart, { ...product, quantity: 1, price }]);
         }
     };
@@ -191,36 +191,70 @@ const POS = () => {
                     overflowY: 'auto',
                     paddingRight: '0.5rem'
                 }}>
-                    {filteredProducts.map((product, index) => (
-                        <div key={index}
-                            onClick={() => addToCart(product)}
-                            style={{
-                                background: 'white',
-                                borderRadius: '12px',
-                                overflow: 'hidden',
-                                border: '1px solid #eee',
-                                cursor: 'pointer',
-                                transition: 'transform 0.1s',
-                                display: 'flex',
-                                flexDirection: 'column'
-                            }}
-                            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.98)'}
-                            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                        >
-                            <div style={{ height: '120px', overflow: 'hidden' }}>
-                                {product.img && (product.img.includes('video') || product.img.match(/\.(mp4|webm|ogg|mov)$/i)) ? (
-                                    <video src={product.img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
-                                ) : (
-                                    <img src={product.img} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {filteredProducts.map((product, index) => {
+                        const cartItem = cart.find(item => item.name === product.name && item.flavor === product.flavor);
+                        const qty = cartItem ? cartItem.quantity : 0;
+
+                        return (
+                            <div key={index}
+                                onClick={() => addToCart(product)}
+                                style={{
+                                    background: 'white',
+                                    borderRadius: '12px',
+                                    overflow: 'hidden',
+                                    border: qty > 0 ? '2px solid var(--color-accent)' : '1px solid #eee',
+                                    cursor: 'pointer',
+                                    transition: 'transform 0.1s',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    position: 'relative'
+                                }}
+                                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.98)'}
+                                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                                {qty > 0 && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '10px',
+                                        right: '10px',
+                                        background: 'var(--color-accent)',
+                                        color: 'white',
+                                        width: '28px',
+                                        height: '28px',
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '0.9rem',
+                                        fontWeight: 'bold',
+                                        zIndex: 10,
+                                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                                    }}>
+                                        {qty}
+                                    </div>
                                 )}
+                                <div style={{ height: '120px', overflow: 'hidden' }}>
+                                    {product.img && (product.img.includes('video') || product.img.match(/\.(mp4|webm|ogg|mov)$/i)) ? (
+                                        <video src={product.img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
+                                    ) : (
+                                        <img src={product.img} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    )}
+                                </div>
+                                <div style={{ padding: '0.75rem' }}>
+                                    <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '0.9rem' }}>{product.name}</h4>
+                                    <div style={{ fontSize: '0.8rem', color: '#666' }}>{product.flavor}</div>
+                                    <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div style={{ fontWeight: 'bold', color: 'var(--color-accent)' }}>₹{product.price || 120}.00</div>
+                                        {qty > 0 && (
+                                            <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 'bold' }}>
+                                                Total: ₹{((product.price || 120) * qty).toFixed(2)}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                            <div style={{ padding: '0.75rem' }}>
-                                <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '0.9rem' }}>{product.name}</h4>
-                                <div style={{ fontSize: '0.8rem', color: '#666' }}>{product.flavor}</div>
-                                <div style={{ marginTop: '0.5rem', fontWeight: 'bold', color: 'var(--color-accent)' }}>₹120.00</div>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 
@@ -261,7 +295,7 @@ const POS = () => {
                                     <div style={{ fontSize: '0.8rem', color: '#666' }}>₹{item.price.toFixed(2)} x {item.quantity}</div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                                    <div style={{ fontWeight: 'bold' }}>₹{(item.price * item.quantity).toFixed(2)}</div>
+                                    <div style={{ fontWeight: 'bold' }}>Total: ₹{(item.price * item.quantity).toFixed(2)}</div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                                         <button onClick={() => updateQuantity(idx, 1)} style={{ cursor: 'pointer', background: '#eef', border: 'none', borderRadius: '4px', width: '20px' }}>+</button>
                                         <button onClick={() => updateQuantity(idx, -1)} style={{ cursor: 'pointer', background: '#fee', border: 'none', borderRadius: '4px', width: '20px' }}>-</button>

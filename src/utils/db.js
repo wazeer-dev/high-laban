@@ -85,7 +85,19 @@ const db = {
     },
 
     resetOrders: async () => {
-        alert("Reset All is disabled for Cloud Database safety.");
+        try {
+            const querySnapshot = await getDocs(collection(firestore, COLLECTIONS.ORDERS));
+            const deletePromises = [];
+            querySnapshot.forEach((doc) => {
+                deletePromises.push(deleteDoc(doc.ref));
+            });
+            await Promise.all(deletePromises);
+            return true;
+        } catch (error) {
+            console.error("Firestore Error:", error);
+            alert("Failed to reset data: " + error.message);
+            throw error;
+        }
     },
 
     // --- Customers ---
@@ -128,6 +140,54 @@ const db = {
             activeUsers: { value: activeUsers.toLocaleString(), change: '+0%' },
             pendingReview: { value: '0', change: '0%' }
         };
+    },
+
+    // --- Locations ---
+    getLocations: async () => {
+        try {
+            const querySnapshot = await getDocs(collection(firestore, 'locations'));
+            const locations = [];
+            querySnapshot.forEach((doc) => locations.push({ id: doc.id, ...doc.data() }));
+            return locations;
+        } catch (error) {
+            console.error("Firestore Error:", error);
+            // alert("Failed to load locations: " + error.message);
+            return []; // Fail silent or empty
+        }
+    },
+
+    addLocation: async (location) => {
+        try {
+            const docRef = await addDoc(collection(firestore, 'locations'), location);
+            return { id: docRef.id, ...location };
+        } catch (error) {
+            console.error("Firestore Error:", error);
+            alert("Failed to save location: " + error.message);
+            throw error;
+        }
+    },
+
+    updateLocation: async (id, updatedLocation) => {
+        try {
+            const locationRef = doc(firestore, 'locations', id);
+            await updateDoc(locationRef, updatedLocation);
+            return { id, ...updatedLocation };
+        } catch (error) {
+            console.error("Firestore Error:", error);
+            alert("Failed to update location: " + error.message);
+            throw error;
+        }
+    },
+
+    deleteLocation: async (id) => {
+        try {
+            await deleteDoc(doc(firestore, 'locations', id));
+            return id;
+        } catch (error) {
+            console.error("Firestore Error:", error);
+            alert("Failed to delete location: " + error.message);
+            throw error;
+        }
     },
 
     // --- Auth ---

@@ -11,6 +11,7 @@ export default function Hero() {
     const containerRef = useRef(null);
     const canvasRef = useRef(null);
     const [imagesLoaded, setImagesLoaded] = useState(0);
+
     // const [isLoading, setIsLoading] = useState(true); // No longer blocking
 
     // Progress determines the frame
@@ -94,34 +95,42 @@ export default function Hero() {
 
     return (
         <div className={styles.heroContainer} ref={containerRef}>
-            {/* Removed blocking loading overlay */}
-
             <div className={styles.stickyWrapper}>
                 <canvas ref={canvasRef} className={styles.heroCanvas} />
 
                 <div className={styles.overlayContent}>
-                    <div className={styles.leftBlock}>
-                        <p className={styles.introLine}>India's First<br /><strong>EGYPTIAN DESSERT</strong></p>
-                        <h1 className={styles.mainTitle}>
-                            Creamy<br />Dreamy<br />Desserts
-                        </h1>
-                        <div className={styles.skillRow}>
-                            <div className={styles.skillItem}><span>01</span> Authentic Taste</div>
-                            <div className={styles.skillItem}><span>02</span> Premium Ingredients</div>
+                    <div className={styles.topBadge}>
+                        Premium Egyptian Desserts in India
+                    </div>
+
+                    <h1 className={styles.mainTitle}>
+                        GET HIGH <span className={styles.highlight}>ON BITE</span>
+                    </h1>
+
+                    <p className={styles.subHeadline}>
+                        Experience Egypt's Finest Creamy Desserts
+                    </p>
+
+                    <div className={styles.buttonGroup}>
+                        <button className={styles.btnPrimary}>Our Flavors</button>
+                        <button className={styles.btnSecondary}>Our Story</button>
+                        <div className={styles.playWrapper} onClick={() => document.getElementById('nature')?.scrollIntoView({ behavior: 'smooth' })} style={{ cursor: 'pointer' }}>
+                            <div className={styles.rotatingText}>
+                                <svg viewBox="0 0 100 100">
+                                    <defs>
+                                        <path id="circle" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
+                                    </defs>
+                                    <text>
+                                        <textPath xlinkHref="#circle">
+                                            PLAY VIDEO • PLAY VIDEO •
+                                        </textPath>
+                                    </text>
+                                </svg>
+                            </div>
+                            <div className={styles.playCenter}>
+                                <span className={styles.playIcon}>▶</span>
+                            </div>
                         </div>
-                    </div>
-
-                    <div className={styles.rightBlock}>
-                        <h2 className={styles.subHeadline}>Indulge in the Creamiest<br />Egyptian Delights.</h2>
-                        <p className={styles.supportingText}>
-                            Experience the rich, authentic taste of traditional Egyptian desserts,
-                            crafted with premium milk and secret recipes passed down through generations.
-                            A taste you'll never forget.
-                        </p>
-                    </div>
-
-                    <div className={styles.bottomSocial}>
-                        <a href="https://www.instagram.com/highlaban/" target="_blank" rel="noopener noreferrer">Instagram</a>
                     </div>
                 </div>
             </div>

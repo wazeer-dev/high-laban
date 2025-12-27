@@ -1,8 +1,8 @@
 .heroContainer {
-    height: 600vh;
-    /* Determines scroll length */
-    background: var(--color-bg-dark);
+    height: 400vh;
+    background: #ffffff;
     position: relative;
+    font-family: 'Outfit', sans-serif;
 }
 
 .stickyWrapper {
@@ -11,8 +11,8 @@
     height: 100vh;
     width: 100%;
     overflow: hidden;
-    border-bottom-left-radius: 40px;
-    border-bottom-right-radius: 40px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .heroCanvas {
@@ -20,201 +20,192 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 1.5;
     border-bottom-left-radius: 40px;
     border-bottom-right-radius: 40px;
 }
 
-.loadingOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--color-bg-dark);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-primary);
-}
-
-.loadingContent {
-    text-align: center;
-    width: 300px;
-}
-
-.loadingBar {
-    width: 100%;
-    height: 4px;
-    background: var(--color-border);
-    margin: 20px 0;
-    border-radius: 2px;
-}
-
-.loadingBar div {
-    height: 100%;
-    background: var(--color-accent);
-    transition: width 0.1s linear;
-}
-
 .overlayContent {
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 0;
+    transform: translateY(-50%);
     width: 100%;
+    max-width: 1200px;
     height: 100%;
     pointer-events: none;
-    /* Let clicks pass through if needed, but text needs interaction? Usually Hero text is static or buttons */
-    /* If buttons, then pointer-events: auto on children */
-}
-
-.leftBlock {
-    position: absolute;
-    top: 15vh;
-    left: 5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    /* Kept left as per revert */
     text-align: left;
-    max-width: 40vw;
+    /* Kept left as per revert */
+    padding-left: 5vw;
+    padding-right: 0;
+    z-index: 10;
 }
 
-.introLine {
-    color: #ffffff;
-    font-size: 1.5rem;
-    font-weight: 400;
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
+.topBadge {
+    display: inline-block;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 2rem;
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
 }
 
 .mainTitle {
-    color: var(--color-accent);
-    font-size: clamp(3rem, 6vw, 6rem);
-    line-height: 1.1;
-    text-transform: none;
-    font-weight: 700;
-    margin-bottom: 2rem;
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 1;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #000;
+    margin-bottom: 1rem;
 }
 
-.skillRow {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.skillItem {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-.skillItem span {
-    color: var(--color-text-primary);
-    font-weight: bold;
-    font-family: var(--font-display);
-}
-
-.rightBlock {
-    position: absolute;
-    top: 35vh;
-    right: 5vw;
-    text-align: right;
-    max-width: 35vw;
+.mainTitle span.highlight {
+    color: #2979ff;
+    display: block;
 }
 
 .subHeadline {
-    font-size: 2rem;
-    color: #ffffff;
-    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 3rem;
+    font-weight: 500;
 }
 
-.supportingText {
-    color: #ffffff;
-    line-height: 1.6;
-    font-size: 1.1rem;
-}
-
-.bottomSocial {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
+.buttonGroup {
     display: flex;
-    gap: 2rem;
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
+    gap: 1rem;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.btnPrimary {
+    background: #000;
+    color: #fff;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.bottomSocial a {
-    color: inherit;
+    font-size: 0.9rem;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: transform 0.2s;
+    border: none;
+    cursor: pointer;
 }
 
-.bottomSocial a:hover {
-    color: var(--color-accent);
+.btnPrimary:hover {
+    transform: scale(1.05);
 }
 
-@media (max-width: 1024px) {
-    .mainTitle {
-        font-size: 4rem;
+.btnSecondary {
+    background: #fff;
+    color: #000;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: 1px solid #000;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.btnSecondary:hover {
+    background: #f0f0f0;
+}
+
+/* New Rotating Play Button */
+.playWrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.playWrapper:hover {
+    transform: scale(1.1);
+}
+
+.rotatingText {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation: spin 10s linear infinite;
+}
+
+.rotatingText svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.rotatingText text {
+    font-size: 14px;
+    font-family: monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    fill: #000;
+}
+
+.playCenter {
+    width: 40px;
+    height: 40px;
+    background: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    color: white;
+}
+
+.playIcon {
+    font-size: 16px;
+    margin-left: 2px;
+    /* Visual balance */
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
     }
 
-    .leftBlock {
-        max-width: 50vw;
-    }
-
-    .rightBlock {
-        max-width: 45vw;
+    to {
+        transform: rotate(360deg);
     }
 }
 
 @media (max-width: 768px) {
-    .leftBlock {
-        position: relative;
-        top: auto;
-        left: auto;
-        width: 100%;
-        max-width: 100%;
-        padding: 0 1.5rem;
-        margin-top: 15vh;
-        text-align: center;
-    }
-
-    .introLine {
-        font-size: 1.2rem;
-    }
-
     .mainTitle {
-        font-size: 3rem;
-        margin-bottom: 1.5rem;
+        font-size: 3.5rem;
     }
 
-    .skillRow {
-        justify-content: center;
+    .buttonGroup {
+        flex-direction: column;
         gap: 1rem;
+        align-items: flex-start;
+        /* Match left alignment */
     }
 
-    .rightBlock {
-        position: relative;
-        top: auto;
-        right: auto;
+    .btnPrimary,
+    .btnSecondary {
         width: 100%;
-        max-width: 100%;
-        padding: 0 1.5rem;
-        margin-top: 2rem;
-        text-align: center;
-    }
-
-    .subHeadline {
-        font-size: 1.5rem;
-    }
-
-    .bottomSocial {
-        width: 100%;
-        justify-content: center;
-        gap: 1rem;
-        font-size: 0.8rem;
+        max-width: 250px;
     }
 }

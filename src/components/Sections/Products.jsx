@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Container from '../UI/Container';
 import styles from './Products.module.css';
-import db from '../../utils/db'; // Import db
+import db from '../../utils/db'; // Import DB
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -11,56 +11,58 @@ export default function Products() {
             const data = await db.getProducts();
             setProducts(data);
         };
-
-        // Initial fetch
         fetchProducts();
-
-        // Polling
-        const interval = setInterval(() => {
-            fetchProducts();
-        }, 3000); // Slightly longer interval for cloud
-
-        return () => clearInterval(interval);
     }, []);
 
     return (
         <section id="products" className={styles.section}>
             <Container>
                 <div className={styles.header}>
-                    <h2 className={styles.title}>Our Products</h2>
-                    <p className={styles.subtitle}>You are going to like our desserts for sure.</p>
+                    <div className={styles.menuButton}>Our Menu</div>
+                    <h2 className={styles.title}>Crush the craving.</h2>
                     <p className={styles.description}>
-                        Perfect for sharing or savoring solo, it's the ultimate treat to satisfy your sweet cravings.
-                        One taste and you will never forget its rich & unforgettable flavour.
+                        17 drops of heaven. Authentic egyptian recipes with a modern twist.
                     </p>
                 </div>
 
                 <div className={styles.grid}>
-                    {products.map((product, index) => (
-                        <div key={index} className={styles.card}>
-                            <div className={styles.cardHeader}>
-                                {product.name}
+                    {products.map((product) => (
+                        <div key={product.id} className={styles.card}>
+                            {product.badge && (
+                                <span className={`${styles.badge} ${product.badge === 'NEW ARRIVAL' ? styles.badgeNewArrival : ''}`}>
+                                    {product.badge}
+                                </span>
+                            )}
+
+                            <div className={styles.imageContainer}>
+                                <img src={product.img || product.image} alt={product.name} className={styles.productImage} />
                             </div>
-                            <div className={styles.cardBody}>
-                                {product.img && (product.img.includes('video') || product.img.match(/\.(mp4|webm|ogg|mov)$/i)) ? (
-                                    <video
-                                        src={product.img}
-                                        className={styles.productImage}
-                                        controls
-                                        muted
-                                        style={{ objectFit: 'cover' }}
-                                    />
-                                ) : (
-                                    <img src={product.img} alt={product.name} className={styles.productImage} />
-                                )}
-                                <span className={styles.productFlavor}>{product.flavor}</span>
-                                <div className={styles.arrows}>
-                                    <span>←</span>
-                                    <span>→</span>
+
+                            <span className={styles.tag}>{product.tag}</span>
+
+                            <h3 className={styles.productName}>{product.name}</h3>
+                            <span className={styles.productTagLine}>{product.tag}</span>
+                            <p className={styles.productDescription}>{product.description}</p>
+
+                            <div className={styles.cardFooter}>
+                                <div className={styles.priceContainer}>
+                                    {product.originalPrice && (
+                                        <span className={styles.originalPrice}>
+                                            <span style={{ fontSize: '0.8em' }}>₹</span>{product.originalPrice}
+                                        </span>
+                                    )}
+                                    <div className={styles.price}>
+                                        <span className={styles.priceCurrency}>₹</span>{product.price}
+                                    </div>
                                 </div>
+                                <button className={styles.orderButton}>Order</button>
                             </div>
                         </div>
                     ))}
+                </div>
+
+                <div className={styles.viewMoreContainer}>
+                    <button className={styles.viewMoreButton}>View More</button>
                 </div>
             </Container>
         </section>

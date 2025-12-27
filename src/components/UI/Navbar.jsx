@@ -1,46 +1,51 @@
+// Removed Container import as we control width with .navPill in CSS and flex in .navbar
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Container from '../UI/Container';
 import styles from './Navbar.module.css';
 import logo from '../../assets/logo.png';
 
 export default function Navbar() {
-    const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
+            if (window.scrollY > 50) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
         };
+
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return (
-        <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
-            <Container className={styles.navContainer}>
+        <nav className={styles.navbar}>
+            <div className={`${styles.navPill} ${isScrolled ? styles.scrolled : ''}`}>
                 <Link to="/login" className={styles.logo}>
-                    <img src={logo} alt="High Laban" style={{ height: '48px' }} />
+                    <img src={logo} alt="High Laban" />
                 </Link>
+
+                <div className={`${styles.links} ${menuOpen ? styles.menuOpen : ''}`}>
+                    <a href="#" onClick={() => setMenuOpen(false)}>OUR STORY</a>
+                    <a href="#" onClick={() => setMenuOpen(false)}>MENU</a>
+                    <a href="#" onClick={() => setMenuOpen(false)}>FRANCHISE</a>
+                </div>
+
+                <a href="#" className={styles.ctaButton}>
+                    SHOP NOW <span>🛍️</span>
+                </a>
 
                 <button
                     className={styles.menuToggle}
                     onClick={() => setMenuOpen(!menuOpen)}
                     aria-label="Toggle navigation"
                 >
-                    <span className={`${styles.hamburger} ${menuOpen ? styles.open : ''}`}></span>
+                    <span className={styles.hamburger}></span>
                 </button>
-
-                <div className={`${styles.links} ${menuOpen ? styles.menuOpen : ''}`}>
-                    <a href="#" onClick={() => setMenuOpen(false)}>Home</a>
-                    <a href="#" onClick={() => setMenuOpen(false)}>Menu</a>
-                    <a href="#location-map" onClick={() => setMenuOpen(false)}>Locations</a>
-                    <a href="#" onClick={() => setMenuOpen(false)}>Contact</a>
-
-                </div>
-
-
-            </Container>
+            </div>
         </nav>
     );
 }

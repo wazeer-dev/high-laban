@@ -6,6 +6,8 @@ import FAQ from '../components/Sections/FAQ';
 import Products from '../components/Sections/Products';
 import Marquee from '../components/Sections/Marquee';
 
+import ValuesAndLocations from '../components/Sections/ValuesAndLocations';
+
 const Home = () => {
 
 
@@ -18,6 +20,7 @@ const Home = () => {
                 <Products />
                 <VideoSection />
                 <FAQ />
+                <ValuesAndLocations />
             </main>
         </>
     );

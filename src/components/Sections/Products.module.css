@@ -1,108 +1,297 @@
 .section {
-    padding: 6rem 0;
-    background-color: #FFFFFF;
-    text-align: center;
+    padding: 4rem 0;
+    background-color: #f0f8ff;
+    /* Light blueish background like the design */
+    font-family: 'Outfit', sans-serif;
+    /* Assuming Outfit or similar modern font */
 }
 
 .header {
-    margin-bottom: 4rem;
+    text-align: center;
+    margin-bottom: 3rem;
 }
 
 .title {
     font-size: 3rem;
     font-weight: 700;
-    color: #000000;
-    margin-bottom: 1rem;
-    font-family: var(--font-display);
+    color: #003399;
+    /* Deep Blue title */
+    margin-bottom: 0.5rem;
 }
 
 .subtitle {
-    font-size: 1.2rem;
-    color: #0EA5E9;
-    /* Sky blue */
-    margin-bottom: 0.5rem;
-    font-weight: 500;
+    font-size: 1rem;
+    color: #66acee;
+    /* Light blue accent */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
 }
 
 .description {
     font-size: 0.9rem;
-    color: #4B5563;
+    color: #777;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 0.5rem auto 0;
     line-height: 1.5;
 }
 
-.grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
-    padding: 0 2rem;
+.menuButton {
+    border: 1px solid #2979ff;
+    color: #2979ff;
+    background: transparent;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: inline-block;
 }
 
+.grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Card Styling */
 .card {
-    width: 280px;
-    background: #FFFFFF;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s;
-    border: 1px solid #E5E7EB;
+    background: white;
+    border-radius: 30px;
+    /* More rounded as per image */
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    /* Soft large shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f5fa;
+    /* Very subtle border */
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+    border-color: #dbeafe;
 }
 
-.cardHeader {
-    background-color: #0EA5E9;
-    /* Sky blue */
-    padding: 1rem;
+/* Badge (Top Right) */
+.badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #2962ff;
+    background: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    z-index: 2;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    /* Shadow for badge */
+    letter-spacing: 1px;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.badgeNewArrival {
+    background: #2563eb;
     color: white;
-    font-weight: 700;
-    font-size: 1.1rem;
-    text-align: center;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    animation: blink 2s infinite ease-in-out;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.cardBody {
-    padding: 2rem;
+/* Image */
+.imageContainer {
+    width: 100%;
+    height: 220px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 1rem;
 }
 
 .productImage {
-    width: 150px;
-    height: 150px;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* changed to cover for better fill */
+    transition: transform 0.3s ease;
+    border-radius: 20px;
 }
 
-.productFlavor {
-    font-weight: 600;
-    color: #1F2937;
-    font-size: 0.9rem;
+.card:hover .productImage {
+    transform: scale(1.05);
 }
 
-.arrows {
-    display: flex;
-    gap: 1rem;
-    color: #0EA5E9;
+/* Tag (Below Image) */
+.tag {
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid #dbeafe;
+    /* Light blue border */
+    color: #2563eb;
+    /* Blue text */
+    padding: 0.4rem 1rem;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    background: #f8fbff;
+    /* Very light blue bg */
+    letter-spacing: 0.5px;
+}
+
+/* Typography */
+.productName {
     font-size: 1.5rem;
-    margin-top: 1rem;
+    font-weight: 800;
+    color: #002159;
+    /* Dark Navy Blue */
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
 }
 
-@media (max-width: 640px) {
-    .grid {
-        padding: 0 1rem;
-    }
+/* Reusing tag style for subtitle if needed, or separate class */
+.productTagLine {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #3b82f6;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    display: block;
+    /* Ensure it takes a line */
+}
 
-    .card {
-        width: 100%;
-        max-width: 350px;
-    }
+.productDescription {
+    font-size: 0.9rem;
+    color: #64748b;
+    /* Slate Gray */
+    margin-bottom: 2rem;
+    line-height: 1.5;
+    flex-grow: 1;
+}
 
-    .title {
-        font-size: 2.25rem;
-    }
+/* Footer / Price / Button */
+.cardFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    /* Align bottom */
+    margin-top: auto;
+}
+
+.priceContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.originalPrice {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    text-decoration: line-through;
+    font-weight: 600;
+    margin-bottom: -2px;
+    /* Pull closer to main price */
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #2962ff;
+    /* Bright Blue */
+    line-height: 1;
+}
+
+.priceCurrency {
+    font-size: 1.4rem;
+    margin-right: 2px;
+    vertical-align: top;
+    position: relative;
+    top: 2px;
+}
+
+.orderButton {
+    background-color: #2962ff;
+    /* Bright Blue matches price */
+    color: white;
+    border: none;
+    padding: 0.8rem 2.5rem;
+    /* Wide button */
+    border-radius: 16px;
+    /* Rounded rect, not full pill */
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(41, 98, 255, 0.3);
+    /* Blue shadow */
+}
+
+.orderButton:hover {
+    background-color: #0044cc;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(41, 98, 255, 0.4);
+}
+
+.viewMoreContainer {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.viewMoreButton {
+    background: white;
+    border: 1px solid #d0d0d0;
+    color: #2979ff;
+    padding: 0.8rem 2.5rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+}
+
+.viewMoreButton:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }

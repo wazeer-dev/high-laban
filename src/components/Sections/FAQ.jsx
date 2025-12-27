@@ -1,40 +1,60 @@
-import React, { useState } from 'react';
-import Container from '../UI/Container';
-import styles from './Sections.module.css';
-
-const faqs = [
-    { q: "01 Authentic Egyptian Recipes", a: "We use traditional methods to ensure a genuinely authentic taste." },
-    { q: "02 Premium Ingredients", a: "We use only the finest ingredients to create our desserts." },
-    { q: "04 Elegant Presentation", a: "Visually stunning desserts crafted to look as good as they taste." },
-    { q: "05 Cultural Fusion", a: "A perfect blend of Egyptian tradition and Kerala’s love for sweets." },
-    { q: "06 Crafted by Experts", a: "Skillfully prepared by trained staff to ensure perfection in every detail." },
-    { q: "07 A Taste & Experience", a: "More than just a dessert; a rare experience that delights the senses." },
-];
-
-function AccordionItem({ question, answer }) {
-    const [isOpen, setIsOpen] = useState(false);
-    return (
-        <div className={styles.accordionItem}>
-            <button className={styles.accordionHeader} onClick={() => setIsOpen(!isOpen)}>
-                <span>{question}</span>
-                <span>{isOpen ? '-' : '+'}</span>
-            </button>
-            {isOpen && <div className={styles.accordionBody}>{answer}</div>}
-        </div>
-    );
-}
+import React from 'react';
+import styles from './Highlights.module.css';
+import { FaCheckCircle } from 'react-icons/fa';
 
 export default function FAQ() {
+    const features = [
+        "Authentic Recipes",
+        "Premium Ingredients",
+        "Freshly Made Daily",
+        "Zero Preservatives",
+        "Innovative Fusions",
+        "Pure Passion"
+    ];
+
     return (
         <section className={styles.section}>
-            <Container>
-                <h2 className={styles.sectionTitle}>Our <span className={styles.highlight}>Highlights</span></h2>
-                <div className={styles.accordionWrapper}>
-                    {faqs.map((faq, i) => (
-                        <AccordionItem key={i} question={faq.q} answer={faq.a} />
-                    ))}
+            <div className={styles.container}>
+                <div className={styles.splitLayout}>
+                    {/* Left Side - Our Story Card */}
+                    <div className={styles.storyCard}>
+                        <div className={styles.storyCardTitle}>
+                            Our Story
+                            <div className={styles.hlLogo}>HL</div>
+                        </div>
+                        <p className={styles.storyCardText}>
+                            Rooted in time-honored Egyptian recipes and crafted with only the finest ingredients, our
+                            signature desserts are rich, creamy and irresistibly delicious. HIGHLABAN brings you
+                            authentic Egyptian desserts that celebrate tradition while creating unforgettable flavor
+                            experiences.
+                        </p>
+                        <p className={styles.storyCardText} style={{ marginBottom: 0 }}>
+                            Every bite is a journey through tradition and indulgence, made with love by our passionate,
+                            expertly trained team.
+                        </p>
+                    </div>
+
+                    {/* Right Side - Feature Grid */}
+                    <div className={styles.storyRight}>
+                        <span className={styles.labelSmall}>ABOUT US</span>
+                        <h2 className={styles.storyHeadline}>Where Tradition Meets <br /> Innovation</h2>
+                        <p className={styles.storyDescription}>
+                            We are proud to be India's first dedicated Egyptian dessert brand. From
+                            our signature Lou'a to the viral Pistachio Kunafa Bomb, we craft happiness
+                            in every droplet.
+                        </p>
+
+                        <div className={styles.storyGrid}>
+                            {features.map((item, index) => (
+                                <div key={index} className={styles.featureItem}>
+                                    <span className={styles.featureIcon}><FaCheckCircle /></span>
+                                    {item}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
-            </Container>
+            </div>
         </section>
     );
 }
