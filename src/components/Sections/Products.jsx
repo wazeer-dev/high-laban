@@ -32,6 +32,17 @@ const ProductCard = ({ product }) => {
         setCurrentImageIndex(index);
     }
 
+    // Auto-slide effect
+    useEffect(() => {
+        if (images.length <= 1 || isHovering) return;
+
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % images.length);
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [images.length, isHovering]);
+
     return (
         <div
             className={styles.card}
