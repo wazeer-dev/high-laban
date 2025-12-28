@@ -5,6 +5,8 @@
     padding: 4rem 1.5rem 1rem 1.5rem;
     font-family: 'Outfit', sans-serif;
     position: relative;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
 
 .container {
