@@ -89,8 +89,13 @@ const AdminDashboard = () => {
         e.preventDefault();
         setIsUploading(true);
         try {
-            // Race condition to prevent hanging
-            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Network Timeout: Check your internet or Vercel config.")), 15000));
+            // detailed configuration check
+            if (!import.meta.env.VITE_FIREBASE_API_KEY) {
+                throw new Error("Missing Firebase API Key. Please configure Vercel Environment Variables.");
+            }
+
+            // Race condition to prevent hanging (increased to 60s)
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Network Timeout: Database is not responding. Check your internet connection or Firebase Quota.")), 60000));
             await Promise.race([db.addProduct(newProduct), timeoutPromise]);
             setNewProduct({ name: '', tag: '', price: '', description: '', badge: '', img: '' });
             setShowAddForm(false);
