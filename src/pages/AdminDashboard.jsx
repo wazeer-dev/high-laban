@@ -25,9 +25,7 @@ const AdminDashboard = () => {
         activeUsers: { value: '0', change: '0%' },
         pendingReview: { value: '0', change: '0%' }
     });
-    const [newProduct, setNewProduct] = useState({ name: '', tag: '', price: '', description: '', badge: '', img: '' });
-
-
+    const [newProduct, setNewProduct] = useState({ name: '', tag: '', price: '', description: '', badge: '', img: '', images: [] });
 
     // Header Dropdown State
     const [showUserMenu, setShowUserMenu] = useState(false);
@@ -42,7 +40,6 @@ const AdminDashboard = () => {
     // For inline editing tracking
     const [editingProduct, setEditingProduct] = useState(null);
 
-
     // Mobile Menu State
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -52,7 +49,6 @@ const AdminDashboard = () => {
             const ords = await db.getOrders();
             setOrders(ords);
             const sts = await db.getStats();
-            // Assuming db.getStats returns object, if mocking ensure keys exist
             setStats(sts || { totalOrders: { value: '0', change: '0%' }, totalRevenue: { value: '₹0', change: '0%' }, activeUsers: { value: '0', change: '0%' }, pendingReview: { value: '0', change: '0%' } });
         } else if (activeTab === 'products') {
             const prods = await db.getProducts();
@@ -60,7 +56,6 @@ const AdminDashboard = () => {
         } else if (activeTab === 'customers') {
             const custs = await db.getCustomers();
             setCustomers(custs);
-
         }
     };
 
@@ -92,7 +87,7 @@ const AdminDashboard = () => {
             // Race condition to prevent hanging (increased to 60s)
             const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Network Timeout: Database is not responding. Check your internet connection or Firebase Quota.")), 60000));
             await Promise.race([db.addProduct(newProduct), timeoutPromise]);
-            setNewProduct({ name: '', tag: '', price: '', description: '', badge: '', img: '' });
+            setNewProduct({ name: '', tag: '', price: '', description: '', badge: '', img: '', images: [] });
             setShowAddForm(false);
             alert('Product added successfully!');
             refreshData();
@@ -113,7 +108,6 @@ const AdminDashboard = () => {
 
         const productToUpdate = updatedProducts.find(p => p.id === id);
         try {
-            // In a real app we might debounce this
             await db.updateProduct(id, productToUpdate);
         } catch (error) {
             console.error("Update failed", error);
@@ -132,7 +126,31 @@ const AdminDashboard = () => {
         }
     };
 
+    // Helper: Add image to product state
+    const addImageToState = (url, target, productId) => {
+        if (target === 'new') {
+            const currentImages = newProduct.images || (newProduct.img ? [newProduct.img] : []);
+            const newImages = [...currentImages, url];
+            setNewProduct({ ...newProduct, images: newImages, img: newImages[0] });
+        } else if (target === 'edit' && editingProduct) {
+            const currentImages = editingProduct.images || (editingProduct.img ? [editingProduct.img] : []);
+            const newImages = [...currentImages, url];
+            setEditingProduct({ ...editingProduct, images: newImages, img: newImages[0] });
+        }
+    };
 
+    // Helper: Remove image
+    const handleRemoveImage = (index, target) => {
+        if (target === 'new') {
+            const currentImages = newProduct.images || (newProduct.img ? [newProduct.img] : []);
+            const newImages = currentImages.filter((_, i) => i !== index);
+            setNewProduct({ ...newProduct, images: newImages, img: newImages.length > 0 ? newImages[0] : '' });
+        } else if (target === 'edit' && editingProduct) {
+            const currentImages = editingProduct.images || (editingProduct.img ? [editingProduct.img] : []);
+            const newImages = currentImages.filter((_, i) => i !== index);
+            setEditingProduct({ ...editingProduct, images: newImages, img: newImages.length > 0 ? newImages[0] : '' });
+        }
+    };
 
     // File Upload Logic
     const handleFileUpload = async (e, target, productId = null) => {
@@ -142,19 +160,11 @@ const AdminDashboard = () => {
         const isVideo = file.type.startsWith('video/');
 
         if (isVideo) {
+            // ... existing video logic if needed, but assuming mostly images for now ...
             setIsUploading(true);
             try {
                 const url = await uploadMedia(file);
-                if (target === 'new') {
-                    setNewProduct({ ...newProduct, img: url });
-                } else if (target === 'edit' && productId) {
-                    if (productId === editingProduct?.id) {
-                        setEditingProduct({ ...editingProduct, img: url });
-                    } else {
-                        handleUpdateProduct(productId, 'img', url);
-                        handleUpdateProduct(productId, 'image', url);
-                    }
-                }
+                addImageToState(url, target, productId);
             } catch (e) {
                 alert(e.message);
             } finally {
@@ -176,16 +186,7 @@ const AdminDashboard = () => {
         setIsUploading(true);
         try {
             const url = await uploadMedia(croppedBlob);
-            if (cropTarget === 'new') {
-                setNewProduct({ ...newProduct, img: url });
-            } else if (cropTarget === 'edit' && editingProductId) {
-                if (editingProductId === editingProduct?.id) {
-                    setEditingProduct({ ...editingProduct, img: url });
-                } else {
-                    handleUpdateProduct(editingProductId, 'img', url);
-                    handleUpdateProduct(editingProductId, 'image', url);
-                }
-            }
+            addImageToState(url, cropTarget, editingProductId);
             setCroppingImage(null);
             setCropTarget(null);
             setEditingProductId(null);
@@ -197,7 +198,9 @@ const AdminDashboard = () => {
     };
 
     const handleEditClick = (product) => {
-        setEditingProduct({ ...product });
+        // Ensure images array exists
+        const images = product.images || (product.img ? [product.img] : []);
+        setEditingProduct({ ...product, images });
     };
 
     const handleSaveEdit = async () => {
@@ -395,14 +398,32 @@ const AdminDashboard = () => {
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', gridColumn: '1/-1' }}>
                                         <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8' }}>Product Image</label>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                                            <div style={{ width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', background: '#f1f5f9', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                {newProduct.img ? (
-                                                    <img src={newProduct.img} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                ) : (
+                                            {/* Image List */}
+                                            {newProduct.images && newProduct.images.length > 0 ? (
+                                                newProduct.images.map((imgUrl, index) => (
+                                                    <div key={index} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                                        <img src={imgUrl} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveImage(index, 'new')}
+                                                            style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
+                                                            ✕
+                                                        </button>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div style={{ width: '80px', height: '80px', borderRadius: '12px', background: '#f1f5f9', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <span style={{ fontSize: '1.5rem', opacity: 0.3 }}>🖼️</span>
-                                                )}
+                                                </div>
+                                            )}
+
+                                            {/* Add Button */}
+                                            <div
+                                                onClick={() => document.getElementById('new-product-file').click()}
+                                                style={{ width: '80px', height: '80px', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#f8fafc' }}>
+                                                <span style={{ fontSize: '1.5rem', color: '#94a3b8' }}>+</span>
                                             </div>
-                                            <div style={{ flex: 1 }}>
+                                            <div style={{ flex: 1, display: 'none' }}>
                                                 <input type="file" onChange={(e) => handleFileUpload(e, 'new')} style={{ fontSize: '0.9rem' }} id="new-product-file" />
                                             </div>
                                             <button type="submit" className={styles.saveButton} disabled={isUploading}>{isUploading ? 'SAVING...' : 'ADD NOW'}</button>
@@ -472,15 +493,34 @@ const AdminDashboard = () => {
                         <div style={{ display: 'grid', gap: '1.5rem' }}>
                             {/* Image Edit */}
                             <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                                <img
-                                    src={editingProduct.img || editingProduct.image || 'https://placehold.co/200'}
-                                    alt="Preview"
-                                    style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '12px', marginBottom: '1rem', cursor: 'pointer' }}
-                                    onClick={() => document.getElementById(`edit-file-${editingProduct.id}`).click()}
-                                />
+                                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '1rem' }}>
+                                    {editingProduct.images && editingProduct.images.length > 0 ? (
+                                        editingProduct.images.map((imgUrl, index) => (
+                                            <div key={index} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                                <img src={imgUrl} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveImage(index, 'edit')}
+                                                    style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        // Fallback for legacy data without images array
+                                        <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                            <img src={editingProduct.img || 'https://placehold.co/200'} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        </div>
+                                    )}
+                                    {/* Add Button */}
+                                    <div
+                                        onClick={() => document.getElementById(`edit-file-${editingProduct.id}`).click()}
+                                        style={{ width: '80px', height: '80px', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#f8fafc' }}>
+                                        <span style={{ fontSize: '1.5rem', color: '#94a3b8' }}>+</span>
+                                    </div>
+                                </div>
                                 <br />
                                 <input type="file" id={`edit-file-${editingProduct.id}`} style={{ display: 'none' }} onChange={(e) => handleFileUpload(e, 'edit', editingProduct.id)} />
-                                <button type="button" onClick={() => document.getElementById(`edit-file-${editingProduct.id}`).click()} className={styles.cancelBtn} style={{ fontSize: '0.8rem', padding: '0.4rem 1rem' }}>Change Image</button>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
