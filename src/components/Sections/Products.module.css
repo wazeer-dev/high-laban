@@ -160,22 +160,24 @@
 }
 
 /* Tag (Below Image) */
+/* Tag (Below Image) */
 .tag {
     display: inline-block;
     align-self: flex-start;
-    border: 1px solid #dbeafe;
-    /* Light blue border */
-    color: #2563eb;
-    /* Blue text */
+    border: 1px solid #2563eb;
+    /* Blue border */
+    color: #ffffff;
+    /* White text */
     padding: 0.4rem 1rem;
     border-radius: 12px;
     font-size: 0.65rem;
     font-weight: 800;
     text-transform: uppercase;
     margin-bottom: 1rem;
-    background: #f8fbff;
-    /* Very light blue bg */
+    background: #2563eb;
+    /* Blue bg */
     letter-spacing: 0.5px;
+    animation: blink 2s infinite ease-in-out;
 }
 
 /* Typography */
