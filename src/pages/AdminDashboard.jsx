@@ -98,7 +98,7 @@ const AdminDashboard = () => {
             refreshData();
         } catch (error) {
             console.error(error);
-            alert('Error adding product');
+            alert(`Error adding product: ${error.message}`);
         } finally {
             setIsUploading(false);
         }
