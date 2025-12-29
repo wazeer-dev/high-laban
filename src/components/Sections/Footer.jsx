@@ -1,9 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './Footer.module.css';
 import logo from '../../assets/logo.png';
 import { FaInstagram, FaFacebookF, FaWhatsapp, FaArrowUp, FaPaperPlane } from 'react-icons/fa';
 
 export default function Footer() {
+    const [isVisible, setIsVisible] = useState(false);
+    const footerRef = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (footerRef.current) observer.observe(footerRef.current);
+        return () => observer.disconnect();
+    }, []);
 
     const scrollToTop = () => {
         window.scrollTo({
@@ -12,9 +29,17 @@ export default function Footer() {
         });
     };
 
+    const scrollToSection = (e, id) => {
+        e.preventDefault();
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
         <footer className={styles.footer}>
-            <div className={styles.container}>
+            <div className={`${styles.container} ${isVisible ? styles.contentVisible : styles.contentHidden}`} ref={footerRef}>
                 {/* Top Section */}
                 <div className={styles.topSection}>
                     {/* Brand Column */}
@@ -28,14 +53,14 @@ export default function Footer() {
                     {/* Explore Column */}
                     <div className={styles.linkList}>
                         <h4 className={styles.columnTitle}>EXPLORE</h4>
-                        <a href="#about" className={styles.link}>Our Story</a>
+                        <a href="#story-section" className={styles.link} onClick={(e) => scrollToSection(e, 'story-section')}>Our Story</a>
                         <a href="#products" className={styles.link}>Menu</a>
                         <a href="#" className={styles.link}>Franchise</a>
-                        <a href="#locations" className={styles.link}>Locations</a>
+                        <a href="https://www.google.com/maps/search/High+Laban" target="_blank" rel="noopener noreferrer" className={styles.link}>Find Us</a>
                     </div>
 
                     {/* Connect Column */}
-                    <div>
+                    <div className={styles.connectCol}>
                         <h4 className={styles.columnTitle}>CONNECT</h4>
                         <div className={styles.socialIcons}>
                             <a href="https://www.instagram.com/highlaban/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
@@ -51,7 +76,7 @@ export default function Footer() {
                     </div>
 
                     {/* Stay Sweet Column */}
-                    <div>
+                    <div className={styles.subscribeCol}>
                         <h4 className={styles.columnTitle}>STAY SWEET</h4>
                         <p className={styles.subscribeText}>
                             Subscribe to get the latest drops and secret menu alerts.

@@ -1,3 +1,6 @@
+/* Example content of Highlights.module.css */
+
+
 .section {
     padding: 6rem 0;
     background: #fff;
@@ -144,4 +147,22 @@
     .storyCard {
         max-width: 100%;
     }
+}
+
+/* Scroll Animations */
+.hiddenLeft {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 1s ease-out;
+}
+
+.hiddenRight {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: all 1s ease-out;
+}
+
+.visible {
+    opacity: 1;
+    transform: translateX(0);
 }

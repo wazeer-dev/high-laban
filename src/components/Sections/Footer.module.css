@@ -2,11 +2,12 @@
     background-color: #009ceb;
     /* Bright Blue */
     color: white;
-    padding: 4rem 1.5rem 1rem 1.5rem;
+    padding: 1rem 1.5rem 0.5rem 1.5rem;
     font-family: 'Outfit', sans-serif;
     position: relative;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
+
 }
 
 .container {
@@ -18,14 +19,14 @@
     display: grid;
     grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
     gap: 3rem;
-    margin-bottom: 4rem;
+    margin-bottom: 1rem;
 }
 
 /* Brand Column */
 .brandCol {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .logo {
@@ -48,7 +49,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     opacity: 0.8;
 }
 
@@ -92,6 +93,17 @@
 
 .socialIcon:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+/* Column Wrappers */
+.connectCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.subscribeCol {
+    display: flex;
+    flex-direction: column;
 }
 
 /* Newsletter */
@@ -142,7 +154,7 @@
 /* Bottom Bar */
 .bottomBar {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 2rem;
+    padding-top: .1rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -185,9 +197,45 @@
 }
 
 @media (max-width: 600px) {
+    .footer {
+        text-align: center;
+    }
+
     .topSection {
-        grid-template-columns: 1fr;
-        gap: 2rem;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem 1rem;
+    }
+
+    .brandCol {
+        align-items: center;
+        grid-column: 1 / -1;
+    }
+
+    .logo {
+        align-self: center;
+    }
+
+    .linkList {
+        align-items: center;
+        align-items: flex-start;
+        text-align: left;
+        padding-left: 0.5rem;
+    }
+
+    .connectCol {
+        align-items: flex-end;
+        text-align: right;
+        padding-right: 0.5rem;
+    }
+
+    .socialIcons {
+        justify-content: center;
+        justify-content: flex-end;
+    }
+
+    .subscribeCol {
+        grid-column: 1 / -1;
+        align-items: center;
     }
 
     .scrollTopBtn {
@@ -196,4 +244,16 @@
         right: 20px;
         z-index: 100;
     }
+}
+
+/* Scroll Animation */
+.contentHidden {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+}
+
+.contentVisible {
+    opacity: 1;
+    transform: translateY(0);
 }

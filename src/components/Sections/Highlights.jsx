@@ -1,18 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Container from '../UI/Container';
 import styles from './Highlights.module.css';
 import { FaCheckCircle } from 'react-icons/fa';
 
 export default function Highlights() {
+    const [isVisible, setIsVisible] = useState(false);
+    const sectionRef = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.disconnect(); // Animate only once
+                }
+            },
+            { threshold: 0.2 } // Trigger when 20% of the section is visible
+        );
+
+        if (sectionRef.current) observer.observe(sectionRef.current);
+        return () => observer.disconnect();
+    }, []);
+
     return (
-        <section id="story-section" className={styles.section}>
+        <section id="story-section" className={styles.section} ref={sectionRef}>
             <Container>
                 <div className={styles.splitLayout}>
                     {/* Left Card */}
-                    <div className={styles.storyCard}>
+                    <div className={`${styles.storyCard} ${isVisible ? styles.visible : styles.hiddenLeft}`}>
                         <div className={styles.storyCardTitle}>
                             Our Story
-                            <div className={styles.hlLogo}>HL</div>
+                          <div className={styles.hlLogo}>HL</div>
                         </div>
                         <p className={styles.storyCardText}>
                             Rooted in time-honored Egyptian recipes and crafted with only the finest ingredients, our signature desserts are rich, creamy and irresistibly delicious. HIGHLABAN brings you authentic Egyptian desserts that celebrate tradition while creating unforgettable flavor experiences.
@@ -23,7 +41,7 @@ export default function Highlights() {
                     </div>
 
                     {/* Right Content */}
-                    <div className={styles.storyRight}>
+                    <div className={`${styles.storyRight} ${isVisible ? styles.visible : styles.hiddenRight}`}>
                         <span className={styles.labelSmall}>Why Choose Us</span>
                         <h2 className={styles.storyHeadline}>Where Tradition Meets Innovation</h2>
                         <p className={styles.storyDescription}>
