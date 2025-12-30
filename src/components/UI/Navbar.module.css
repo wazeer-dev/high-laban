@@ -55,18 +55,32 @@
 }
 
 .links a {
-    color: #000;
+    color: var(--color-text-primary);
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-family: 'Outfit', sans-serif;
-    transition: color 0.2s;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--color-accent);
+    transition: width 0.3s ease;
 }
 
 .links a:hover {
-    color: #2979ff;
+    color: var(--color-accent);
+}
+
+.links a:hover::after {
+    width: 100%;
 }
 
 .ctaButton {

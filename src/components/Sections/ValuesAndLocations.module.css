@@ -10,40 +10,49 @@
     padding: 0 1.5rem;
 }
 
-/* Values Grid (Top Row) */
-.valuesGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
+/* Stats Section */
+.statsWrapper {
+    display: flex;
+    flex-direction: row;
+    /* Horizontal layout */
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    /* Increased gap */
     margin-bottom: 6rem;
-}
-
-.valueCard {
-    background: #f0f9ff;
-    /* Light blue background */
-    border-radius: 20px;
-    padding: 2.5rem 1.5rem;
     text-align: center;
-    border: 1px solid #e0f2fe;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex-wrap: wrap;
 }
 
-.valueCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+.statItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.valueTitle {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #2563eb;
-    margin-bottom: 1rem;
+.statValue {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1;
+    margin-bottom: 0.5rem;
 }
 
-.valueText {
+.statLabel {
     font-size: 0.9rem;
+    font-weight: 700;
     color: #64748b;
-    line-height: 1.6;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.separator {
+    width: 2px;
+    /* Vertical line */
+    height: 80px;
+    /* Taller line */
+    background-color: #e2e8f0;
+    margin: 0;
 }
 
 /* Locations Section (Bottom Section) */
@@ -91,6 +100,13 @@
     max-width: 320px;
     flex: 1;
     min-width: 250px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.locationCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .locationIconWrapper {
@@ -129,13 +145,25 @@
 }
 
 @media (max-width: 968px) {
-    .valuesGrid {
-        grid-template-columns: 1fr 1fr;
+    .statsWrapper {
+        gap: 2rem;
+    }
+
+    .statValue {
+        font-size: 3rem;
     }
 }
 
-@media (max-width: 500px) {
-    .valuesGrid {
-        grid-template-columns: 1fr;
+@media (max-width: 768px) {
+    .statsWrapper {
+        flex-direction: column;
+        /* Stack on mobile */
+        gap: 3rem;
+    }
+
+    .separator {
+        width: 60px;
+        height: 2px;
+        /* Horizontal on mobile */
     }
 }

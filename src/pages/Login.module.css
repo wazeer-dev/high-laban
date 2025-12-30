@@ -1,0 +1,219 @@
+/* Login.module.css */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Outfit:wght@400;500;700;800&display=swap');
+
+/* Page Background Wrapper */
+.pageWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* Fixed height to viewport */
+    width: 100vw;
+    background-color: #e7e2e2;
+    /* Light background */
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden;
+    /* Prevent scrolling */
+    padding: 40px;
+    /* Gap at top/bottom */
+    box-sizing: border-box;
+}
+
+/* The Card Container */
+.container {
+    display: flex;
+    width: 90%;
+    max-width: 850px;
+    /* Reduced width */
+    height: 500px;
+    /* Reduced height */
+    background-color: #ffffff;
+    border-radius: 30px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+/* Left Panel */
+.leftPanel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 3.5rem;
+    /* Reduced padding */
+    background: #ffffff;
+    z-index: 2;
+    position: relative;
+    max-width: 1150px;
+}
+
+.logoContainer {
+    margin-bottom: 1rem;
+}
+
+.logo {
+    height: 45px;
+    /* Smaller logo */
+}
+
+.header {
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    /* Smaller title */
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+}
+
+.subtitle {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* Form Styles */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.label {
+    font-weight: 600;
+    color: #334155;
+    font-size: 0.9rem;
+}
+
+.inputWrapper {
+    position: relative;
+}
+
+.input {
+    width: 100%;
+    padding: 0.8rem;
+    /* Smaller padding */
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.9rem;
+    /* Smaller font */
+    color: #1e293b;
+    outline: none;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.input:focus {
+    border-color: #3b82f6;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.eyeIcon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.submitBtn {
+    margin-top: 0.5rem;
+    background: #007bff;
+    /* Bright Blue */
+    color: white;
+    padding: 0.8rem;
+    /* Smaller button */
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(0, 123, 255, 0.3);
+}
+
+.submitBtn:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.submitBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.footerLinks {
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    text-align: center;
+}
+
+/* Right Panel */
+.rightPanel {
+    /* Slightly wider */
+    background: #0084ff;
+    /* Clean blue background */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: white;
+}
+
+/* The decorative 'Get High' text */
+
+
+.characterImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left center;
+    z-index: 5;
+    /* Removed drop-shadow as it might look weird on full fill, but can keep if needed. 
+       Usually full width images don't need drop shadow against the container edges */
+}
+
+
+
+/* Curve Separator */
+/* We will use an SVG in the JSX, positioned absolutely on the Left Panel */
+
+
+/* Mobile Responsive */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .leftPanel {
+        order: 2;
+        max-width: 100%;
+        padding: 2rem 2rem;
+        border-radius: 30px 30px 0 0;
+        margin-top: -50px;
+        /* Overlap right panel */
+    }
+
+    .rightPanel {
+        order: 1;
+        flex: 0.5;
+        padding: 2rem 2rem 1rem 1rem;
+    }
+}

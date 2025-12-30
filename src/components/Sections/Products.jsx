@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import Container from '../UI/Container';
 import styles from './Products.module.css';
-import db from '../../utils/db'; // Import DB
+import db from '../../utils/db';
+import useScrollReveal from '../../hooks/useScrollReveal'; // Import DB
+import { FaTimes } from 'react-icons/fa';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, index, isModal = false }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isHovering, setIsHovering] = useState(false);
 
@@ -45,7 +48,7 @@ const ProductCard = ({ product }) => {
 
     return (
         <div
-            className={styles.card}
+            className={`${styles.card} ${!isModal ? `reveal reveal-delay-${(index % 4) * 100}` : ''}`}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
         >
@@ -108,6 +111,23 @@ const ProductCard = ({ product }) => {
 
 export default function Products() {
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [isFullMenuOpen, setIsFullMenuOpen] = useState(false);
+
+    // Disable background scroll when modal is open
+    useEffect(() => {
+        if (isFullMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [isFullMenuOpen]);
+
+    useScrollReveal([products]);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -121,7 +141,7 @@ export default function Products() {
         <section id="products" className={styles.section}>
             <Container>
                 <div className={styles.header}>
-                    <div className={styles.menuButton}>Our Menu</div>
+                    <div className={styles.menuButton}>Full Menu</div>
                     <h2 id="menu-title" className={styles.title}>Crush the craving.</h2>
                     <p className={styles.description}>
                         17 drops of heaven. Authentic egyptian recipes with a modern twist.
@@ -129,15 +149,37 @@ export default function Products() {
                 </div>
 
                 <div className={styles.grid}>
-                    {products.map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                    {products.slice(0, 6).map((product, index) => (
+                        <ProductCard key={product.id} product={product} index={index} />
                     ))}
                 </div>
 
                 <div className={styles.viewMoreContainer}>
-                    <button className={styles.viewMoreButton}>View More</button>
+                    <button className={styles.viewMoreButton} onClick={() => setIsFullMenuOpen(true)}>View More</button>
                 </div>
             </Container>
+
+            {/* Full Menu Overlay - Portal to Body */}
+            {isFullMenuOpen && ReactDOM.createPortal(
+                <div className={styles.fullMenuOverlay}>
+                    <div className={styles.fullMenuContainer}>
+                        <div className={styles.fullMenuHeader}>
+                            <h2 className={styles.fullMenuTitle}>Full Menu</h2>
+                            <button className={styles.closeButton} onClick={() => setIsFullMenuOpen(false)}>
+                                <FaTimes />
+                            </button>
+                        </div>
+                        <div className={styles.fullMenuContent}>
+                            <div className={styles.modalGrid}>
+                                {products.map((product, index) => (
+                                    <ProductCard key={product.id} product={product} index={index} isModal={true} />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
         </section>
     );
 }

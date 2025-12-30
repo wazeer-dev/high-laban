@@ -1,17 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './ValuesAndLocations.module.css';
 import { FaMapMarkerAlt } from 'react-icons/fa';
-import db from '../../utils/db';
+import useScrollReveal from '../../hooks/useScrollReveal';
+import useCountUp from '../../hooks/useCountUp';
+
+const StatItem = ({ label, target, suffix, start }) => {
+    const count = useCountUp(target, 2500, start);
+    return (
+        <div className={`${styles.statItem} reveal`}>
+            <div className={styles.statValue}>{count}{suffix}</div>
+            <div className={styles.statLabel}>{label}</div>
+        </div>
+    );
+};
 
 export default function ValuesAndLocations() {
     const [locations, setLocations] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [startCounting, setStartCounting] = useState(false);
 
-    const values = [
-        { title: "100% Authentic", text: "Traditional Egyptian recipes passed down through generations." },
-        { title: "Fresh Ingredients", text: "We use only the finest, freshest ingredients daily." },
-        { title: "Made with Love", text: "Every dessert is crafted with passion and care." },
-        { title: "Sweet Joy", text: "Guaranteed to bring a smile to your face." }
+    useScrollReveal();
+
+    // Intersection Observer to start counting when stats are visible
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setStartCounting(true);
+                    observer.disconnect(); // Only trigger once
+                }
+            },
+            { threshold: 0.2 }
+        );
+
+        const section = document.getElementById('stats-section');
+        if (section) observer.observe(section);
+
+        return () => observer.disconnect();
+    }, []);
+
+    const stats = [
+        { label: "LOCATIONS", target: 1, suffix: "+" },
+        { label: "HAPPY CUSTOMERS", target: 10, suffix: "K+" },
+        { label: "VARIETIES", target: 30, suffix: "+" }
     ];
 
     useEffect(() => {
@@ -33,17 +64,24 @@ export default function ValuesAndLocations() {
         <section className={styles.section}>
             <div className={styles.container}>
                 {/* Top Section - Values */}
-                <div className={styles.valuesGrid}>
-                    {values.map((val, index) => (
-                        <div key={index} className={styles.valueCard}>
-                            <h3 className={styles.valueTitle}>{val.title}</h3>
-                            <p className={styles.valueText}>{val.text}</p>
-                        </div>
+                {/* Top Section - Stats */}
+                {/* Top Section - Stats */}
+                <div id="stats-section" className={styles.statsWrapper}>
+                    {stats.map((stat, index) => (
+                        <React.Fragment key={index}>
+                            <StatItem
+                                label={stat.label}
+                                target={stat.target}
+                                suffix={stat.suffix}
+                                start={startCounting}
+                            />
+                            {index < stats.length - 1 && <div className={`${styles.separator} reveal reveal-delay-200`}></div>}
+                        </React.Fragment>
                     ))}
                 </div>
 
                 {/* Bottom Section - Locations */}
-                <div className={styles.locationsWrapper}>
+                <div id="locations" className={styles.locationsWrapper}>
                     <span className={styles.smallLabel}>FIND US</span>
                     <h2 className={styles.sectionTitle}>Our Locations</h2>
                     <p className={styles.sectionSubtitle}>Find your nearest HighLaban and experience the taste of Egypt.</p>

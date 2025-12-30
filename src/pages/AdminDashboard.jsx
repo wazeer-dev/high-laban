@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import db from '../utils/db';
 import { uploadMedia } from '../utils/storage';
 import styles from './AdminDashboard.module.css';
+import logo from '../assets/logo.png';
 
 import ImageCropper from '../components/UI/ImageCropper';
-import SalesChart from '../components/Dashboard/SalesChart';
-import POS from '../components/Dashboard/POS'; // Kept primarily for reference if needed, or if user wants it back in Dashboard
+// import SalesChart from '../components/Dashboard/SalesChart'; // Removed as per request
+// import POS from '../components/Dashboard/POS'; // Removed as per user request
 
 // Icons
 const LoopIcon = () => <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#cbd5e1"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>;
@@ -15,16 +17,14 @@ const SaveIcon = () => <svg width="18" height="18" fill="none" viewBox="0 0 24 2
 const EditIcon = () => <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>;
 
 const AdminDashboard = () => {
-    const [activeTab, setActiveTab] = useState('dashboard');
+    const navigate = useNavigate();
+    const user = db.getUser(); // Check auth immediately
+    const [activeTab, setActiveTab] = useState('products');
     const [products, setProducts] = useState([]);
     const [orders, setOrders] = useState([]);
     const [customers, setCustomers] = useState([]);
-    const [stats, setStats] = useState({
-        totalOrders: { value: '0', change: '0%' },
-        totalRevenue: { value: '₹0', change: '0%' },
-        activeUsers: { value: '0', change: '0%' },
-        pendingReview: { value: '0', change: '0%' }
-    });
+    const [franchiseInquiries, setFranchiseInquiries] = useState([]);
+    /* Stats removed */
     const [newProduct, setNewProduct] = useState({ name: '', tag: '', price: '', description: '', badge: '', img: '', images: [] });
 
     // Header Dropdown State
@@ -45,25 +45,30 @@ const AdminDashboard = () => {
 
     // Helper to fetch data
     const refreshData = async () => {
-        if (activeTab === 'dashboard') {
-            const ords = await db.getOrders();
-            setOrders(ords);
-            const sts = await db.getStats();
-            setStats(sts || { totalOrders: { value: '0', change: '0%' }, totalRevenue: { value: '₹0', change: '0%' }, activeUsers: { value: '0', change: '0%' }, pendingReview: { value: '0', change: '0%' } });
-        } else if (activeTab === 'products') {
+        if (activeTab === 'products') {
             const prods = await db.getProducts();
             setProducts(prods);
         } else if (activeTab === 'customers') {
             const custs = await db.getCustomers();
             setCustomers(custs);
+        } else if (activeTab === 'franchise') {
+            const inquiries = await db.getFranchiseInquiries();
+            setFranchiseInquiries(inquiries);
         }
     };
 
     useEffect(() => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
         refreshData();
         const interval = setInterval(refreshData, 5000); // Polling every 5s
         return () => clearInterval(interval);
-    }, [activeTab]);
+    }, [activeTab, navigate]);
+
+    // Prevent rendering if not logged in (stops flash of content)
+    if (!user) return null;
 
     const handleResetData = async () => {
         if (window.confirm("Are you sure you want to RESET all data? This will clear all orders and revenue.")) {
@@ -232,7 +237,7 @@ const AdminDashboard = () => {
             {/* Sidebar */}
             <aside className={`${styles.sidebar} ${isMobileOpen ? styles.open : ''}`}>
                 <div className={styles.logo}>
-                    <div style={{ width: '40px', height: '40px', background: '#3b82f6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>HL</div>
+                    <img src={logo} alt="HighLaban Logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
                     <div className={styles.logoText}>
                         HighLaban
                         <span className={styles.logoSub}>ADMIN</span>
@@ -240,14 +245,8 @@ const AdminDashboard = () => {
                 </div>
 
                 <nav className={styles.nav}>
-                    <div className={`${styles.navItem} ${activeTab === 'dashboard' ? styles.active : ''}`} onClick={() => { setActiveTab('dashboard'); setIsMobileOpen(false); }}>
-                        <span style={{ fontSize: '1.2rem' }}>📊</span> Overview
-                        {activeTab === 'dashboard' && <div className={styles.activeDot}></div>}
-                    </div>
-                    <div className={`${styles.navItem} ${activeTab === 'pos' ? styles.active : ''}`} onClick={() => { setActiveTab('pos'); setIsMobileOpen(false); }}>
-                        <span style={{ fontSize: '1.2rem' }}>🏧</span> POS
-                        {activeTab === 'pos' && <div className={styles.activeDot}></div>}
-                    </div>
+
+
                     <div className={`${styles.navItem} ${activeTab === 'products' ? styles.active : ''}`} onClick={() => { setActiveTab('products'); setIsMobileOpen(false); }}>
                         <span style={{ fontSize: '1.2rem' }}>🛍️</span> Products
                         {activeTab === 'products' && <div className={styles.activeDot}></div>}
@@ -260,6 +259,10 @@ const AdminDashboard = () => {
                     <div className={`${styles.navItem} ${activeTab === 'customers' ? styles.active : ''}`} onClick={() => { setActiveTab('customers'); setIsMobileOpen(false); }}>
                         <span style={{ fontSize: '1.2rem' }}>👥</span> Users
                         {activeTab === 'customers' && <div className={styles.activeDot}></div>}
+                    </div>
+                    <div className={`${styles.navItem} ${activeTab === 'franchise' ? styles.active : ''}`} onClick={() => { setActiveTab('franchise'); setIsMobileOpen(false); }}>
+                        <span style={{ fontSize: '1.2rem' }}>🤝</span> Franchise
+                        {activeTab === 'franchise' && <div className={styles.activeDot}></div>}
                     </div>
                 </nav>
 
@@ -282,7 +285,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className={styles.headerActions}>
-                        <div className={styles.searchBar} style={{ visibility: activeTab === 'pos' ? 'hidden' : 'visible' }}>
+                        <div className={styles.searchBar} style={{ visibility: 'visible' }}>
                             <LoopIcon />
                             <input type="text" placeholder="Search..." className={styles.searchInput} />
                         </div>
@@ -301,54 +304,9 @@ const AdminDashboard = () => {
                     </div>
                 </header>
 
-                {/* --- DASHBOARD TAB --- */}
-                {activeTab === 'dashboard' && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                        <div className={styles.statsGrid}>
-                            {[
-                                { label: 'Total Revenue', value: stats.totalRevenue.value, change: stats.totalRevenue.change, color: '#10b981' },
-                                { label: 'Total Orders', value: stats.totalOrders.value, change: stats.totalOrders.change, color: '#3b82f6' },
-                                { label: 'Active Users', value: stats.activeUsers.value, change: stats.activeUsers.change, color: '#f59e0b' },
-                                { label: 'Pending Review', value: stats.pendingReview.value, change: stats.pendingReview.change, color: '#6366f1' }
-                            ].map((stat, i) => (
-                                <div key={i} className={styles.card} style={{ padding: '1.5rem' }}>
-                                    <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{stat.label}</p>
-                                    <h3 style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#1e293b', marginBottom: '0.5rem' }}>{stat.value}</h3>
-                                    <span style={{ color: stat.color, background: `${stat.color}15`, padding: '0.2rem 0.6rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '600' }}>
-                                        {stat.change} from last month
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
 
-                        <div className={styles.dashboardLayout}>
-                            <div className={styles.card}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                                    <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Revenue Overview</h3>
-                                    <select style={{ border: 'none', background: '#f1f5f9', padding: '0.5rem 1rem', borderRadius: '8px' }}>
-                                        <option>This Year</option>
-                                    </select>
-                                </div>
-                                <div style={{ height: '300px' }}>
-                                    <SalesChart orders={orders} />
-                                </div>
-                            </div>
-                            <div className={styles.card}>
-                                <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>Quick Actions</h3>
-                                <div style={{ display: 'grid', gap: '1rem' }}>
-                                    <button style={{ padding: '1rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textAlign: 'left', fontWeight: '600', color: '#475569' }}>Download Reports</button>
-                                    <button style={{ padding: '1rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textAlign: 'left', fontWeight: '600', color: '#475569' }}>Manage Inventory</button>
-                                    <button style={{ padding: '1rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textAlign: 'left', fontWeight: '600', color: '#475569' }}>Customer Issues (0)</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
 
-                {/* --- POS TAB --- */}
-                {activeTab === 'pos' && (
-                    <POS />
-                )}
+
 
                 {/* --- PRODUCTS TAB --- */}
                 {activeTab === 'products' && (
@@ -482,100 +440,137 @@ const AdminDashboard = () => {
 
                 {/* ... Orders & Customers tabs ... */}
 
+
+
+                {/* --- FRANCHISE TAB --- */}
+                {activeTab === 'franchise' && (
+                    <div className={styles.grid}>
+                        {franchiseInquiries.length > 0 ? (
+                            franchiseInquiries.map((inquiry) => (
+                                <div key={inquiry.id} className={styles.card} style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                                        <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{inquiry.name}</h3>
+                                        <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{new Date(inquiry.date).toLocaleDateString()}</span>
+                                    </div>
+                                    <div style={{ color: '#009ceb', fontWeight: '600', fontSize: '0.9rem' }}>{inquiry.email}</div>
+                                    <div style={{ fontSize: '0.9rem', color: '#64748b' }}>📞 {inquiry.phone}</div>
+
+                                    <div style={{ padding: '10px', background: '#f8fafc', borderRadius: '8px', fontSize: '0.85rem' }}>
+                                        <p style={{ margin: '0 0 5px 0' }}><strong>Location:</strong> {inquiry.city}, {inquiry.state}</p>
+                                        <p style={{ margin: '0 0 5px 0' }}><strong>Type:</strong> {inquiry.franchiseType}</p>
+                                        <p style={{ margin: '0' }}><strong>Own Space:</strong> {inquiry.ownSpace === 'yes' ? 'Yes' : 'No'}</p>
+                                    </div>
+
+                                    {inquiry.shopDescription && (
+                                        <p style={{ fontSize: '0.85rem', color: '#475569', fontStyle: 'italic', margin: 0 }}>"{inquiry.shopDescription}"</p>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <div className={styles.card} style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem' }}>
+                                <p style={{ color: '#94a3b8' }}>No franchise inquiries yet.</p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </main>
 
             {/* EDIT MODAL */}
-            {editingProduct && (
-                <div className={styles.modalOverlay} onClick={() => setEditingProduct(null)}>
-                    <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-                        <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Edit Product</h2>
+            {
+                editingProduct && (
+                    <div className={styles.modalOverlay} onClick={() => setEditingProduct(null)}>
+                        <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+                            <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Edit Product</h2>
 
-                        <div style={{ display: 'grid', gap: '1.5rem' }}>
-                            {/* Image Edit */}
-                            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '1rem' }}>
-                                    {editingProduct.images && editingProduct.images.length > 0 ? (
-                                        editingProduct.images.map((imgUrl, index) => (
-                                            <div key={index} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                                                <img src={imgUrl} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleRemoveImage(index, 'edit')}
-                                                    style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
-                                                    ✕
-                                                </button>
+                            <div style={{ display: 'grid', gap: '1.5rem' }}>
+                                {/* Image Edit */}
+                                <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '1rem' }}>
+                                        {editingProduct.images && editingProduct.images.length > 0 ? (
+                                            editingProduct.images.map((imgUrl, index) => (
+                                                <div key={index} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                                    <img src={imgUrl} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRemoveImage(index, 'edit')}
+                                                        style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
+                                                        ✕
+                                                    </button>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            // Fallback for legacy data without images array
+                                            <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                                <img src={editingProduct.img || 'https://placehold.co/200'} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                             </div>
-                                        ))
-                                    ) : (
-                                        // Fallback for legacy data without images array
-                                        <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                                            <img src={editingProduct.img || 'https://placehold.co/200'} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        )}
+                                        {/* Add Button */}
+                                        <div
+                                            onClick={() => document.getElementById(`edit-file-${editingProduct.id}`).click()}
+                                            style={{ width: '80px', height: '80px', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#f8fafc' }}>
+                                            <span style={{ fontSize: '1.5rem', color: '#94a3b8' }}>+</span>
                                         </div>
-                                    )}
-                                    {/* Add Button */}
-                                    <div
-                                        onClick={() => document.getElementById(`edit-file-${editingProduct.id}`).click()}
-                                        style={{ width: '80px', height: '80px', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#f8fafc' }}>
-                                        <span style={{ fontSize: '1.5rem', color: '#94a3b8' }}>+</span>
+                                    </div>
+                                    <br />
+                                    <input type="file" id={`edit-file-${editingProduct.id}`} style={{ display: 'none' }} onChange={(e) => handleFileUpload(e, 'edit', editingProduct.id)} />
+                                </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Name</label>
+                                        <input type="text" value={editingProduct.name} onChange={e => setEditingProduct({ ...editingProduct, name: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Price (₹)</label>
+                                        <input type="number" value={editingProduct.price} onChange={e => setEditingProduct({ ...editingProduct, price: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
                                     </div>
                                 </div>
-                                <br />
-                                <input type="file" id={`edit-file-${editingProduct.id}`} style={{ display: 'none' }} onChange={(e) => handleFileUpload(e, 'edit', editingProduct.id)} />
-                            </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Name</label>
-                                    <input type="text" value={editingProduct.name} onChange={e => setEditingProduct({ ...editingProduct, name: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Tag</label>
+                                        <input type="text" value={editingProduct.tag || ''} onChange={e => setEditingProduct({ ...editingProduct, tag: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Badge</label>
+                                        <input type="text" value={editingProduct.badge || ''} onChange={e => setEditingProduct({ ...editingProduct, badge: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Price (₹)</label>
-                                    <input type="number" value={editingProduct.price} onChange={e => setEditingProduct({ ...editingProduct, price: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
-                                </div>
-                            </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div>
-                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Tag</label>
-                                    <input type="text" value={editingProduct.tag || ''} onChange={e => setEditingProduct({ ...editingProduct, tag: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Description</label>
+                                    <textarea rows={4} value={editingProduct.description || ''} onChange={e => setEditingProduct({ ...editingProduct, description: e.target.value })} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontFamily: 'inherit' }} />
                                 </div>
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Badge</label>
-                                    <input type="text" value={editingProduct.badge || ''} onChange={e => setEditingProduct({ ...editingProduct, badge: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
+
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+                                    <button onClick={() => setEditingProduct(null)} className={styles.cancelBtn}>Cancel</button>
+                                    <button onClick={handleSaveEdit} className={styles.saveChangesBtn} disabled={isUploading}>
+                                        <SaveIcon />
+                                        {isUploading ? 'Saving...' : 'SAVE CHANGES'}
+                                    </button>
                                 </div>
-                            </div>
-
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Description</label>
-                                <textarea rows={4} value={editingProduct.description || ''} onChange={e => setEditingProduct({ ...editingProduct, description: e.target.value })} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontFamily: 'inherit' }} />
-                            </div>
-
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
-                                <button onClick={() => setEditingProduct(null)} className={styles.cancelBtn}>Cancel</button>
-                                <button onClick={handleSaveEdit} className={styles.saveChangesBtn} disabled={isUploading}>
-                                    <SaveIcon />
-                                    {isUploading ? 'Saving...' : 'SAVE CHANGES'}
-                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
 
 
             {/* Image Cropper Modal */}
-            {croppingImage && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ background: 'white', padding: '2rem', borderRadius: '1rem', width: '90%', maxWidth: '600px' }}>
-                        <ImageCropper imageSrc={croppingImage} onCropComplete={onCropComplete} />
-                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                            <button onClick={() => setCroppingImage(null)} style={{ padding: '0.8rem 1.5rem', border: '1px solid #e2e8f0', background: 'white', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Cancel</button>
+            {
+                croppingImage && (
+                    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ background: 'white', padding: '2rem', borderRadius: '1rem', width: '90%', maxWidth: '600px' }}>
+                            <ImageCropper imageSrc={croppingImage} onCropComplete={onCropComplete} />
+                            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                                <button onClick={() => setCroppingImage(null)} style={{ padding: '0.8rem 1.5rem', border: '1px solid #e2e8f0', background: 'white', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Cancel</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

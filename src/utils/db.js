@@ -190,9 +190,39 @@ const db = {
         }
     },
 
+    // --- Franchise Inquiries ---
+    getFranchiseInquiries: async () => {
+        try {
+            const q = query(collection(firestore, 'franchise_requests'), orderBy('date', 'desc'));
+            const querySnapshot = await getDocs(q);
+            const inquiries = [];
+            querySnapshot.forEach((doc) => inquiries.push({ id: doc.id, ...doc.data() }));
+            return inquiries;
+        } catch (error) {
+            console.error("Firestore Error:", error);
+            return [];
+        }
+    },
+
+    addFranchiseInquiry: async (data) => {
+        try {
+            const finalData = {
+                ...data,
+                date: new Date().toISOString(),
+                status: 'New'
+            };
+            const docRef = await addDoc(collection(firestore, 'franchise_requests'), finalData);
+            return { id: docRef.id, ...finalData };
+        } catch (error) {
+            console.error("Firestore Error:", error);
+            alert("Failed to save inquiry: " + error.message);
+            throw error;
+        }
+    },
+
     // --- Auth ---
     login: async (email, password) => {
-        if (email === 'wazeert13@gmail.com' && password === '1234566') {
+        if (email === 'wazeert13@gmail.com' && password === '12345676') {
             const user = { email, name: 'Admin', role: 'admin' };
             localStorage.setItem('highlaban_user', JSON.stringify(user));
             return user;

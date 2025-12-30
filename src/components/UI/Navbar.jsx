@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import logo from '../../assets/logo.png';
+import FranchiseForm from '../Franchise/FranchiseForm';
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [franchiseOpen, setFranchiseOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -24,7 +26,10 @@ export default function Navbar() {
     return (
         <nav className={styles.navbar}>
             <div className={`${styles.navPill} ${isScrolled ? styles.scrolled : ''}`}>
-                <Link to="/login" className={styles.logo}>
+                <Link to="/" className={styles.logo} onClick={(e) => {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}>
                     <img src={logo} alt="High Laban" />
                 </Link>
 
@@ -50,6 +55,7 @@ export default function Navbar() {
                     <a href="#" onClick={(e) => {
                         e.preventDefault();
                         setMenuOpen(false);
+                        setFranchiseOpen(true);
                     }}>FRANCHISE</a>
                 </div>
 
@@ -65,6 +71,7 @@ export default function Navbar() {
                     <span className={styles.hamburger}></span>
                 </button>
             </div>
+            <FranchiseForm isOpen={franchiseOpen} onClose={() => setFranchiseOpen(false)} />
         </nav>
     );
 }

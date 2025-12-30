@@ -58,6 +58,15 @@
     .aboutGrid {
         grid-template-columns: 1fr;
     }
+
+    .storyGrid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .storyCard {
+        padding: 2rem;
+    }
 }
 
 .featureList {

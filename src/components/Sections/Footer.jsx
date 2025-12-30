@@ -44,7 +44,7 @@ export default function Footer() {
                 <div className={styles.topSection}>
                     {/* Brand Column */}
                     <div className={styles.brandCol}>
-                        <img src={logo} alt="High Laban" className={styles.logo} />
+                        <img src={logo} alt="High Laban" className={styles.logo} onClick={scrollToTop} style={{ cursor: 'pointer' }} />
                         <p className={styles.tagline}>
                             Crafting authentic Egyptian happiness, one droplet at a time. Experience the sweet revolution.
                         </p>

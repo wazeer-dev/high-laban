@@ -9,7 +9,7 @@ import project3 from '../../assets/project_preview_3.png';
 
 export default function VideoSection() {
     return (
-        <section id="nature" className={styles.section}>
+        <section id="story-section" className={styles.section}>
             <Container>
                 <div className={styles.grid}>
                     {/* 1. Title Card */}

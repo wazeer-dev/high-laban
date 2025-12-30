@@ -518,7 +518,7 @@
 
     .main {
         margin-left: 0;
-        padding: 1.5rem;
+        padding: .5rem;
     }
 
     .mobileToggle {
@@ -561,7 +561,7 @@
 
     .modalContent {
         padding: 1.5rem;
-        width: 95%;
+        width: 100%;
     }
 
     .headerActions {
