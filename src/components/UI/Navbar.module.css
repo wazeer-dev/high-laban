@@ -12,28 +12,28 @@
 }
 
 .navPill {
-    background: rgba(255, 255, 255, 0);
-    /* Transparent initially */
+    background: #ffffff;
+    /* Always white */
     border-radius: 50px;
     padding: 0.8rem 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
-    max-width: 1000px;
-    box-shadow: none;
-    /* No shadow initially */
+    width: 90%;
+    max-width: 550px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow */
     pointer-events: auto;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     /* Smooth transition */
-    backdrop-filter: blur(0px);
 }
 
 .navPill.scrolled {
-    background: #ffffff;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    backdrop-filter: blur(10px);
-    /* Optional glass effect */
+    width: 95%;
+    max-width: 650px;
+    /* Expand slightly on scroll? Or keep same? Let's keep it consistent actually or specific effect. */
+    /* User asked for fix width/height. */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -58,8 +58,9 @@
     color: var(--color-text-primary);
     text-decoration: none;
     font-size: 0.9rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 1px;
+    text-transform: uppercase;
     transition: color 0.3s ease;
     position: relative;
 }
@@ -135,12 +136,52 @@
     top: -8px;
 }
 
-.hamburger::after {
-    top: 8px;
+.actionButtons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.franchiseButton {
+    background: transparent;
+    color: #000;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border: 2px solid #000;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.franchiseButton:hover {
+    background: #000;
+    color: #fff;
+}
+
+.mobileOnly {
+    display: none;
+}
+
+.mobileCta {
+    display: none;
+    background: #0055ff;
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 1rem;
 }
 
 /* Mobile */
 @media (max-width: 900px) {
+    .navbar {
+        display: none;
+    }
+
     .navPill {
         padding: 0.8rem 1.5rem;
         justify-content: space-between;
@@ -174,10 +215,20 @@
         padding: 5px;
     }
 
-    .ctaButton {
+    .actionButtons {
         display: none;
-        /* Might want to move inside links for mobile */
     }
 
-    /* Show CTA inside mobile menu if needed, or hide desktop one */
+    .mobileOnly {
+        display: block;
+    }
+
+    .ctaButton {
+        display: none;
+        /* Matches outer CTA */
+    }
+
+    .mobileCta {
+        display: inline-block;
+    }
 }

@@ -166,4 +166,33 @@
         height: 2px;
         /* Horizontal on mobile */
     }
+
+    .separator {
+        width: 60px;
+        height: 2px;
+        /* Horizontal on mobile */
+    }
+}
+
+/* CTA Card (Franchise) */
+.ctaCard {
+    max-width: 600px;
+    margin: 0 auto;
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    padding: 3rem;
+    border-radius: 24px;
+    color: white;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 640px) {
+    .ctaCard {
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+
+    .ctaCard h3 {
+        font-size: 1.5rem !important;
+        /* Override inline if needed, but better to remove inline */
+    }
 }

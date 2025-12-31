@@ -271,3 +271,54 @@
         gap: 1rem;
     }
 }
+
+/* About Section Image Animation */
+.aboutImageContainer {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    max-width: 100%;
+}
+
+.aboutImageContainer img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    border-radius: 20px;
+    /* Ensure image corners match */
+}
+
+.aboutImageContainer:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.aboutImageContainer:hover img {
+    transform: scale(1.05);
+}
+
+/* Shine Effect */
+.aboutImageContainer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-25deg);
+    z-index: 2;
+    transition: left 0.75s ease;
+    pointer-events: none;
+}
+
+.aboutImageContainer:hover::after {
+    left: 150%;
+}

@@ -11,9 +11,12 @@ const ProductCard = ({ product, index, isModal = false }) => {
     const [isHovering, setIsHovering] = useState(false);
 
     // Normalize images: use array if exists, else fallback to single img, else empty array
-    const images = product.images && product.images.length > 0
+    // Also ensure all items are treated as objects with {url, tag} for internal consistency in this component
+    const rawImages = product.images && product.images.length > 0
         ? product.images
         : (product.img || product.image ? [product.img || product.image] : []);
+
+    const images = rawImages.map(img => typeof img === 'string' ? { url: img, tag: '' } : img);
 
     const handleNextImage = (e) => {
         e.stopPropagation();
@@ -46,6 +49,9 @@ const ProductCard = ({ product, index, isModal = false }) => {
         return () => clearInterval(interval);
     }, [images.length, isHovering]);
 
+    // Determine current tag: if specific image tag exists, use it; otherwise fallback to general product tag
+    const currentTag = images[currentImageIndex]?.tag || product.tag;
+
     return (
         <div
             className={`${styles.card} ${!isModal ? `reveal reveal-delay-${(index % 4) * 100}` : ''}`}
@@ -65,9 +71,9 @@ const ProductCard = ({ product, index, isModal = false }) => {
                     style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
                 >
                     {images.length > 0 ? (
-                        images.map((img, index) => (
+                        images.map((imgObj, index) => (
                             <div key={index} className={styles.carouselSlide}>
-                                <img src={img} alt={`${product.name} - ${index + 1}`} className={styles.productImage} />
+                                <img src={imgObj.url} alt={`${product.name} - ${index + 1}`} className={styles.productImage} />
                             </div>
                         ))
                     ) : (
@@ -86,10 +92,10 @@ const ProductCard = ({ product, index, isModal = false }) => {
                 )}
             </div>
 
-            <span className={styles.tag}>{product.tag}</span>
+            <span className={styles.tag}>{currentTag}</span>
 
             <h3 className={styles.productName}>{product.name}</h3>
-            <span className={styles.productTagLine}>{product.tag}</span>
+            <span className={styles.productTagLine}>{currentTag}</span>
             <p className={styles.productDescription}>{product.description}</p>
 
             <div className={styles.cardFooter}>
@@ -103,7 +109,7 @@ const ProductCard = ({ product, index, isModal = false }) => {
                         <span className={styles.priceCurrency}>₹</span>{product.price}
                     </div>
                 </div>
-                <button className={styles.orderButton}>Order</button>
+
             </div>
         </div>
     );

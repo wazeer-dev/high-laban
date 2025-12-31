@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/UI/Navbar';
+import MobileNavbar from './components/UI/MobileNavbar'; // Re-adding import
 import Footer from './components/Sections/Footer';
 import Preloader from './components/UI/Preloader';
 import Home from './pages/Home';
@@ -41,6 +42,7 @@ function App() {
         <Route path="/admin" element={<Navigate to="/login" replace />} />
       </Routes>
       {!location.pathname.startsWith('/dashboard') && !location.pathname.startsWith('/admin') && location.pathname !== '/login' && <Footer />}
+      {!location.pathname.startsWith('/dashboard') && !location.pathname.startsWith('/admin') && location.pathname !== '/login' && <MobileNavbar />}
     </div>
   );
 }

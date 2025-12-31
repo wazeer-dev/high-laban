@@ -133,27 +133,57 @@ const AdminDashboard = () => {
 
     // Helper: Add image to product state
     const addImageToState = (url, target, productId) => {
+        const imageObj = { url, tag: '' }; // New image structure
         if (target === 'new') {
-            const currentImages = newProduct.images || (newProduct.img ? [newProduct.img] : []);
-            const newImages = [...currentImages, url];
-            setNewProduct({ ...newProduct, images: newImages, img: newImages[0] });
+            const currentImages = newProduct.images || (newProduct.img ? [typeof newProduct.img === 'string' ? { url: newProduct.img, tag: '' } : newProduct.img] : []);
+            const newImages = [...currentImages, imageObj];
+            // Backward compat: keep 'img' as the first URL string for now if needed by other components, or just rely on images array
+            setNewProduct({ ...newProduct, images: newImages, img: newImages[0].url });
         } else if (target === 'edit' && editingProduct) {
-            const currentImages = editingProduct.images || (editingProduct.img ? [editingProduct.img] : []);
-            const newImages = [...currentImages, url];
-            setEditingProduct({ ...editingProduct, images: newImages, img: newImages[0] });
+            // Ensure current images are objects
+            const currentImages = (editingProduct.images || (editingProduct.img ? [editingProduct.img] : [])).map(img =>
+                typeof img === 'string' ? { url: img, tag: '' } : img
+            );
+            const newImages = [...currentImages, imageObj];
+            setEditingProduct({ ...editingProduct, images: newImages, img: newImages[0].url });
+        }
+    };
+
+    // Helper: Update image tag
+    const handleImageTagChange = (index, value, target) => {
+        if (target === 'new') {
+            const newImages = [...newProduct.images];
+            // Ensure object
+            if (typeof newImages[index] === 'string') {
+                newImages[index] = { url: newImages[index], tag: value };
+            } else {
+                newImages[index] = { ...newImages[index], tag: value };
+            }
+            setNewProduct({ ...newProduct, images: newImages });
+        } else if (target === 'edit' && editingProduct) {
+            const newImages = [...editingProduct.images];
+            // Ensure object
+            if (typeof newImages[index] === 'string') {
+                newImages[index] = { url: newImages[index], tag: value };
+            } else {
+                newImages[index] = { ...newImages[index], tag: value };
+            }
+            setEditingProduct({ ...editingProduct, images: newImages });
         }
     };
 
     // Helper: Remove image
     const handleRemoveImage = (index, target) => {
         if (target === 'new') {
-            const currentImages = newProduct.images || (newProduct.img ? [newProduct.img] : []);
+            const currentImages = newProduct.images || (newProduct.img ? [typeof newProduct.img === 'string' ? { url: newProduct.img, tag: '' } : newProduct.img] : []);
             const newImages = currentImages.filter((_, i) => i !== index);
-            setNewProduct({ ...newProduct, images: newImages, img: newImages.length > 0 ? newImages[0] : '' });
+            setNewProduct({ ...newProduct, images: newImages, img: newImages.length > 0 ? newImages[0].url || newImages[0] : '' });
         } else if (target === 'edit' && editingProduct) {
-            const currentImages = editingProduct.images || (editingProduct.img ? [editingProduct.img] : []);
+            const currentImages = (editingProduct.images || (editingProduct.img ? [editingProduct.img] : [])).map(img =>
+                typeof img === 'string' ? { url: img, tag: '' } : img
+            );
             const newImages = currentImages.filter((_, i) => i !== index);
-            setEditingProduct({ ...editingProduct, images: newImages, img: newImages.length > 0 ? newImages[0] : '' });
+            setEditingProduct({ ...editingProduct, images: newImages, img: newImages.length > 0 ? newImages[0].url || newImages[0] : '' });
         }
     };
 
@@ -165,7 +195,6 @@ const AdminDashboard = () => {
         const isVideo = file.type.startsWith('video/');
 
         if (isVideo) {
-            // ... existing video logic if needed, but assuming mostly images for now ...
             setIsUploading(true);
             try {
                 const url = await uploadMedia(file);
@@ -203,8 +232,11 @@ const AdminDashboard = () => {
     };
 
     const handleEditClick = (product) => {
-        // Ensure images array exists
-        const images = product.images || (product.img ? [product.img] : []);
+        // Ensure images array exists and normalize to objects for editing state
+        let images = product.images || (product.img ? [product.img] : []);
+        // Normalize strings to objects
+        images = images.map(img => typeof img === 'string' ? { url: img, tag: '' } : img);
+
         setEditingProduct({ ...product, images });
     };
 
@@ -357,18 +389,32 @@ const AdminDashboard = () => {
                                         <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8' }}>Product Image</label>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                                             {/* Image List */}
+                                            {/* Image List */}
                                             {newProduct.images && newProduct.images.length > 0 ? (
-                                                newProduct.images.map((imgUrl, index) => (
-                                                    <div key={index} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                                                        <img src={imgUrl} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleRemoveImage(index, 'new')}
-                                                            style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
-                                                            ✕
-                                                        </button>
-                                                    </div>
-                                                ))
+                                                newProduct.images.map((imgObj, index) => {
+                                                    const url = typeof imgObj === 'string' ? imgObj : imgObj.url;
+                                                    const tag = typeof imgObj === 'string' ? '' : imgObj.tag;
+                                                    return (
+                                                        <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+                                                            <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                                                <img src={url} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleRemoveImage(index, 'new')}
+                                                                    style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
+                                                                    ✕
+                                                                </button>
+                                                            </div>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Tag"
+                                                                value={tag}
+                                                                onChange={(e) => handleImageTagChange(index, e.target.value, 'new')}
+                                                                style={{ width: '80px', fontSize: '0.7rem', padding: '4px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
+                                                            />
+                                                        </div>
+                                                    );
+                                                })
                                             ) : (
                                                 <div style={{ width: '80px', height: '80px', borderRadius: '12px', background: '#f1f5f9', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <span style={{ fontSize: '1.5rem', opacity: 0.3 }}>🖼️</span>
@@ -487,17 +533,30 @@ const AdminDashboard = () => {
                                 <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '1rem' }}>
                                         {editingProduct.images && editingProduct.images.length > 0 ? (
-                                            editingProduct.images.map((imgUrl, index) => (
-                                                <div key={index} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                                                    <img src={imgUrl} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleRemoveImage(index, 'edit')}
-                                                        style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
-                                                        ✕
-                                                    </button>
-                                                </div>
-                                            ))
+                                            editingProduct.images.map((imgObj, index) => {
+                                                const url = typeof imgObj === 'string' ? imgObj : imgObj.url;
+                                                const tag = typeof imgObj === 'string' ? '' : imgObj.tag;
+                                                return (
+                                                    <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+                                                        <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                                            <img src={url} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleRemoveImage(index, 'edit')}
+                                                                style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
+                                                                ✕
+                                                            </button>
+                                                        </div>
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Tag"
+                                                            value={tag}
+                                                            onChange={(e) => handleImageTagChange(index, e.target.value, 'edit')}
+                                                            style={{ width: '80px', fontSize: '0.7rem', padding: '4px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
+                                                        />
+                                                    </div>
+                                                );
+                                            })
                                         ) : (
                                             // Fallback for legacy data without images array
                                             <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>

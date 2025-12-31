@@ -55,7 +55,7 @@ export default function Footer() {
                         <h4 className={styles.columnTitle}>EXPLORE</h4>
                         <a href="#story-section" className={styles.link} onClick={(e) => scrollToSection(e, 'story-section')}>Our Story</a>
                         <a href="#products" className={styles.link}>Menu</a>
-                        <a href="#" className={styles.link}>Franchise</a>
+                        <a href="#franchise-section" className={styles.link} onClick={(e) => scrollToSection(e, 'franchise-section')}>Franchise</a>
                         <a href="https://www.google.com/maps/search/High+Laban" target="_blank" rel="noopener noreferrer" className={styles.link}>Find Us</a>
                     </div>
 

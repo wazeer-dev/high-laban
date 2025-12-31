@@ -22,7 +22,9 @@ export default function About() {
                         </ul>
                     </div>
                     <div className={styles.aboutVisual}>
-                        <img src={aboutCow} alt="High Laban Cow Chef" style={{ width: '100%', height: 'auto', borderRadius: '20px' }} />
+                        <div className={styles.aboutImageContainer}>
+                            <img src={aboutCow} alt="High Laban Cow Chef" />
+                        </div>
                     </div>
                 </div>
             </Container>

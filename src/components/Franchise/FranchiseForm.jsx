@@ -3,9 +3,18 @@ import styles from './FranchiseForm.module.css';
 import db from '../../utils/db';
 import { FaTimes } from 'react-icons/fa';
 
-export default function FranchiseForm({ isOpen, onClose }) {
+export default function FranchiseForm({ isOpen, onClose, isModal = true }) {
     // Prevent background scrolling when open
-
+    useEffect(() => {
+        if (isModal) {
+            if (isOpen) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        }
+        return () => { document.body.style.overflow = 'auto'; };
+    }, [isOpen, isModal]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -42,22 +51,28 @@ export default function FranchiseForm({ isOpen, onClose }) {
             window.location.href = `mailto:wazeert13@gmail.com?subject=${subject}&body=${body}`;
 
             alert("Thank you! Your inquiry has been submitted.");
-            onClose();
+            if (onClose) onClose();
+            e.target.reset(); // Reset form if inline
         } catch (error) {
             console.error(error);
             alert("Error submitting form. Please try again.");
         }
     };
 
+    // If modal is closed, don't render anything (unless inline, which always renders)
+    if (isModal && !isOpen) return null;
+
     return (
         <>
-            <div className={`${styles.overlay} ${isOpen ? styles.open : ''}`} onClick={onClose}></div>
-            <div className={`${styles.drawer} ${isOpen ? styles.open : ''}`}>
+            {isModal && <div className={`${styles.overlay} ${isOpen ? styles.open : ''}`} onClick={onClose}></div>}
+            <div className={isModal ? `${styles.drawer} ${isOpen ? styles.open : ''}` : styles.inlineContainer}>
                 <div className={styles.header}>
                     <h2 className={styles.title}>Franchise Queries</h2>
-                    <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
-                        <FaTimes />
-                    </button>
+                    {isModal && (
+                        <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+                            <FaTimes />
+                        </button>
+                    )}
                 </div>
 
                 <form className={styles.formContent} onSubmit={handleSubmit}>

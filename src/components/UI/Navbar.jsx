@@ -1,14 +1,14 @@
 // Removed Container import as we control width with .navPill in CSS and flex in .navbar
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import logo from '../../assets/logo.png';
-import FranchiseForm from '../Franchise/FranchiseForm';
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-    const [franchiseOpen, setFranchiseOpen] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -52,16 +52,42 @@ export default function Navbar() {
                             window.scrollTo({ top: y, behavior: 'smooth' });
                         }
                     }}>MENU</a>
-                    <a href="#" onClick={(e) => {
+                    <a href="#" className={styles.mobileOnly} onClick={(e) => {
                         e.preventDefault();
                         setMenuOpen(false);
-                        setFranchiseOpen(true);
+                        if (location.pathname !== '/') {
+                            navigate('/', { state: { scrollTo: 'franchise-section' } });
+                        } else {
+                            const element = document.getElementById('franchise-section');
+                            if (element) {
+                                const y = element.getBoundingClientRect().top + window.scrollY - 100;
+                                window.scrollTo({ top: y, behavior: 'smooth' });
+                            }
+                        }
                     }}>FRANCHISE</a>
+
                 </div>
 
-                <a href="#" className={styles.ctaButton}>
-                    SHOP NOW <span>🛍️</span>
-                </a>
+                <div className={styles.actionButtons}>
+                    <a href="#" className={styles.franchiseButton} onClick={(e) => {
+                        e.preventDefault();
+                        const state = { scrollTo: 'franchise-section', openForm: true };
+
+                        if (location.pathname !== '/') {
+                            navigate('/', { state });
+                        } else {
+                            navigate('/', { state, replace: true });
+                            const element = document.getElementById('franchise-section');
+                            if (element) {
+                                const y = element.getBoundingClientRect().top + window.scrollY - 100;
+                                window.scrollTo({ top: y, behavior: 'smooth' });
+                            }
+                        }
+                    }}>
+                        FRANCHISE
+                    </a>
+
+                </div>
 
                 <button
                     className={styles.menuToggle}
@@ -71,7 +97,6 @@ export default function Navbar() {
                     <span className={styles.hamburger}></span>
                 </button>
             </div>
-            <FranchiseForm isOpen={franchiseOpen} onClose={() => setFranchiseOpen(false)} />
         </nav>
     );
 }
