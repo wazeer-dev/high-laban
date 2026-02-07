@@ -576,218 +576,219 @@ const AdminDashboard = () => {
                 }
 
                 {/* --- PRODUCTS TAB --- */}
-                {
-                    activeTab === 'products' && (
-                        <section>
-                            <div className={styles.catalogHeader}>
-                                <h2 className={styles.sectionTitle}>Products Catalog</h2>
-                                <button
-                                    className={styles.addButton}
-                                    onClick={() => setShowAddForm(!showAddForm)}
-                                >
-                                    <span>{showAddForm ? '−' : '+'}</span> {showAddForm ? 'CLOSE FORM' : 'ADD PRODUCT'}
-                                </button>
-                            </div>
+                {activeTab === 'products' && (
+                    <div className={styles.tabContent}>
+                        <div className={styles.catalogHeader}>
+                            <h2 className={styles.sectionTitle}>Products Catalog</h2>
 
-                            {/* Add Product Form (Slide Open) */}
-                            <div style={{
-                                maxHeight: showAddForm ? '800px' : '0',
+                            <button
+                                className={styles.addButton}
+                                onClick={() => setShowAddForm(!showAddForm)}
+                            >
+                                <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{showAddForm ? '−' : '+'}</span> {showAddForm ? 'CLOSE FORM' : 'ADD PRODUCT'}
+                            </button>
+                        </div>
+
+                        {/* Product Form (Slide Open) */}
+                        <div
+                            className={styles.slideOpen}
+                            style={{
+                                maxHeight: showAddForm ? '2000px' : '0',
                                 opacity: showAddForm ? 1 : 0,
                                 marginBottom: showAddForm ? '2rem' : 0,
                                 borderBottom: showAddForm ? '1px solid #e2e8f0' : 'none',
-                                paddingBottom: showAddForm ? '2rem' : 0
-                            }} className={styles.slideOpen}>
-                                <div className={styles.card} style={{ maxWidth: '800px', margin: '0 auto' }}>
-                                    <h3 style={{ marginBottom: '1.5rem' }}>Add New Product</h3>
-                                    <form onSubmit={handleAddProduct} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', alignItems: 'end' }}>
-                                        {/* ... Inputs ... */}
-                                        <div>
-                                            <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Name</label>
-                                            <input type="text" placeholder="e.g. Basbousa" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} required />
-                                        </div>
-                                        <div>
-                                            <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Ingredients</label>
-                                            <input type="text" placeholder="e.g. Milk, Nuts, Honey" value={newProduct.ingredients || ''} onChange={e => setNewProduct({ ...newProduct, ingredients: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} />
-                                        </div>
-                                        <div>
-                                            <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Tag</label>
-                                            <input type="text" placeholder="e.g. SWEET CLASSIC" value={newProduct.tag || ''} onChange={e => setNewProduct({ ...newProduct, tag: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} />
-                                        </div>
-                                        <div>
-                                            <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Price (₹)</label>
-                                            <input type="number" placeholder="220" value={newProduct.price || ''} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} required />
-                                        </div>
-                                        <div>
-                                            <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Badge</label>
-                                            <input type="text" placeholder="e.g. Trending" value={newProduct.badge || ''} onChange={e => setNewProduct({ ...newProduct, badge: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} />
-                                        </div>
-                                        <div style={{ gridColumn: '1 / -1' }}>
-                                            <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Description</label>
-                                            <textarea placeholder="Write a short description..." value={newProduct.description || ''} onChange={e => setNewProduct({ ...newProduct, description: e.target.value })} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', minHeight: '80px', outline: 'none' }} />
-                                        </div>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', gridColumn: '1/-1' }}>
-                                            <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8' }}>Product Image</label>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                                                {/* Image List */}
-                                                {/* Image List */}
-                                                {newProduct.images && newProduct.images.length > 0 ? (
-                                                    newProduct.images.map((imgObj, index) => {
-                                                        const url = typeof imgObj === 'string' ? imgObj : imgObj.url;
-                                                        const tag = typeof imgObj === 'string' ? '' : imgObj.tag;
-                                                        return (
-                                                            <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
-                                                                <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                                                                    <img src={url} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => handleRemoveImage(index, 'new')}
-                                                                        style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
-                                                                        ✕
-                                                                    </button>
-                                                                </div>
-                                                                <input
-                                                                    type="text"
-                                                                    placeholder="Tag"
-                                                                    value={tag}
-                                                                    onChange={(e) => handleImageTagChange(index, e.target.value, 'new')}
-                                                                    style={{ width: '80px', fontSize: '0.7rem', padding: '4px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
-                                                                />
+                                paddingBottom: showAddForm ? '2rem' : 0,
+                                overflow: 'hidden',
+                                transition: 'all 0.5s ease-in-out'
+                            }}
+                        >
+                            <div className={styles.card} style={{ maxWidth: '800px', margin: '0 auto' }}>
+                                <h3 style={{ marginBottom: '1.5rem' }}>Add New Product</h3>
+                                <form onSubmit={handleAddProduct} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', alignItems: 'end' }}>
+                                    {/* Inputs */}
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Name</label>
+                                        <input type="text" placeholder="e.g. Basbousa" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} required />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Ingredients</label>
+                                        <input type="text" placeholder="e.g. Milk, Nuts, Honey" value={newProduct.ingredients || ''} onChange={e => setNewProduct({ ...newProduct, ingredients: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Tag</label>
+                                        <input type="text" placeholder="e.g. SWEET CLASSIC" value={newProduct.tag || ''} onChange={e => setNewProduct({ ...newProduct, tag: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Price (₹)</label>
+                                        <input type="number" placeholder="220" value={newProduct.price || ''} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} required />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Badge</label>
+                                        <input type="text" placeholder="e.g. Trending" value={newProduct.badge || ''} onChange={e => setNewProduct({ ...newProduct, badge: e.target.value })} className={styles.footerField} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', outline: 'none' }} />
+                                    </div>
+
+                                    <div style={{ gridColumn: '1 / -1' }}>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', marginBottom: '0.5rem' }}>Description</label>
+                                        <textarea placeholder="Write a short description..." value={newProduct.description || ''} onChange={e => setNewProduct({ ...newProduct, description: e.target.value })} style={{ background: '#f8fafc', padding: '10px', border: 'none', borderRadius: '8px', width: '100%', minHeight: '80px', outline: 'none' }} />
+                                    </div>
+
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', gridColumn: '1/-1' }}>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8' }}>Product Image</label>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                                            {/* Image List */}
+                                            {newProduct.images && newProduct.images.length > 0 ? (
+                                                newProduct.images.map((imgObj, index) => {
+                                                    const url = typeof imgObj === 'string' ? imgObj : imgObj.url;
+                                                    const tag = typeof imgObj === 'string' ? '' : imgObj.tag;
+                                                    return (
+                                                        <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+                                                            <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                                                <img src={url} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleRemoveImage(index, 'new')}
+                                                                    style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
+                                                                    ✕
+                                                                </button>
                                                             </div>
-                                                        );
-                                                    })
-                                                ) : (
-                                                    <div style={{ width: '80px', height: '80px', borderRadius: '12px', background: '#f1f5f9', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <span style={{ fontSize: '1.5rem', opacity: 0.3 }}>🖼️</span>
-                                                    </div>
-                                                )}
-
-                                                {/* Add Button */}
-                                                <div
-                                                    onClick={() => document.getElementById('new-product-file').click()}
-                                                    style={{ width: '80px', height: '80px', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#f8fafc' }}>
-                                                    <span style={{ fontSize: '1.5rem', color: '#94a3b8' }}>+</span>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Tag"
+                                                                value={tag}
+                                                                onChange={(e) => handleImageTagChange(index, e.target.value, 'new')}
+                                                                style={{ width: '80px', fontSize: '0.7rem', padding: '4px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
+                                                            />
+                                                        </div>
+                                                    );
+                                                })
+                                            ) : (
+                                                <div style={{ width: '80px', height: '80px', borderRadius: '12px', background: '#f1f5f9', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <span style={{ fontSize: '1.5rem', opacity: 0.3 }}>🖼️</span>
                                                 </div>
-                                                <div style={{ flex: 1, display: 'none' }}>
-                                                    <input type="file" onChange={(e) => handleFileUpload(e, 'new')} style={{ fontSize: '0.9rem' }} id="new-product-file" />
-                                                </div>
-                                                <button type="submit" className={styles.saveButton} disabled={isUploading}>{isUploading ? 'SAVING...' : 'ADD NOW'}</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+                                            )}
 
-                            <div className={styles.grid}>
-                                {products.map((product) => (
-                                    <div key={product.id} className={styles.card}>
-                                        <div className={styles.imageArea} style={{ position: 'relative' }}>
-                                            <img src={product.img || product.image || 'https://placehold.co/200'} alt={product.name} className={styles.productImg} />
-                                        </div>
-
-                                        <div className={styles.cardHeader}>
-                                            <div className={styles.cardTitle} style={{ width: '70%' }}>
-                                                <h4 style={{ margin: 0, fontSize: '1.1rem' }}>{product.name}</h4>
+                                            {/* Add Button */}
+                                            <div
+                                                onClick={() => document.getElementById('new-product-file').click()}
+                                                style={{ width: '80px', height: '80px', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#f8fafc' }}>
+                                                <span style={{ fontSize: '1.5rem', color: '#94a3b8' }}>+</span>
                                             </div>
-                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                                <button className={styles.editBtn} onClick={() => handleEditClick(product)} title="Edit Product">
-                                                    <EditIcon />
-                                                </button>
-                                                <button className={styles.deleteBtn} onClick={() => handleDeleteProduct(product.id)} title="Delete Product">
-                                                    <TrashIcon />
-                                                </button>
+                                            <div style={{ flex: 1, display: 'none' }}>
+                                                <input type="file" onChange={(e) => handleFileUpload(e, 'new')} style={{ fontSize: '0.9rem' }} id="new-product-file" />
                                             </div>
-                                        </div>
 
-                                        <div className={styles.cardTag}>
-                                            <span style={{ background: '#f1f5f9', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', color: '#64748b' }}>{product.tag || 'No Tag'}</span>
-                                        </div>
-
-                                        <div className={styles.cardDescription}>
-                                            <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>{product.description?.slice(0, 60) || 'No description'}...</p>
-                                        </div>
-
-                                        <div className={styles.cardFooter}>
-                                            <div className={styles.footerField}>
-                                                <label>PRICE</label>
-                                                <span style={{ fontWeight: 'bold' }}>₹{product.price}</span>
-                                            </div>
-                                            <div className={styles.footerField}>
-                                                <label>BADGE</label>
-                                                <span style={{ fontSize: '0.8rem' }}>{product.badge || '-'}</span>
-                                            </div>
+                                            <button type="submit" className={styles.saveButton} disabled={isUploading}>{isUploading ? 'SAVING...' : 'ADD NOW'}</button>
                                         </div>
                                     </div>
-                                ))}
+                                </form>
                             </div>
-                        </section>
-                    )
-                }
+                        </div>
 
+                        <div className={styles.grid}>
+                            {products.map((product) => (
+                                <div key={product.id} className={styles.card}>
+                                    <div className={styles.imageArea} style={{ position: 'relative' }}>
+                                        <img src={product.img || product.image || 'https://placehold.co/200'} alt={product.name} className={styles.productImg} />
+                                    </div>
 
+                                    <div className={styles.cardHeader}>
+                                        <div className={styles.cardTitle} style={{ width: '70%' }}>
+                                            <h4 style={{ margin: 0, fontSize: '1.1rem' }}>{product.name}</h4>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <button className={styles.editBtn} onClick={() => handleEditClick(product)} title="Edit Product">
+                                                <EditIcon />
+                                            </button>
+                                            <button className={styles.deleteBtn} onClick={() => handleDeleteProduct(product.id)} title="Delete Product">
+                                                <TrashIcon />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.cardTag}>
+                                        <span style={{ background: '#f1f5f9', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', color: '#64748b' }}>{product.tag || 'No Tag'}</span>
+                                    </div>
+
+                                    <div className={styles.cardDescription}>
+                                        <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>{product.description?.slice(0, 60) || 'No description'}...</p>
+                                    </div>
+
+                                    <div className={styles.cardFooter}>
+                                        <div className={styles.footerField}>
+                                            <label>PRICE</label>
+                                            <span style={{ fontWeight: 'bold' }}>₹{product.price}</span>
+                                        </div>
+                                        <div className={styles.footerField}>
+                                            <label>BADGE</label>
+                                            <span style={{ fontSize: '0.8rem' }}>{product.badge || '-'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* --- CUSTOMERS / USERS TAB --- */}
-                {
-                    activeTab === 'customers' && (
-                        <div className={styles.grid}>
-                            {/* Subscribers Section */}
-                            <div className={styles.card} style={{ gridColumn: '1/-1', marginBottom: '2rem' }}>
-                                <h3 style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', marginBottom: '1rem' }}>Newsletter Subscribers</h3>
-                                {subscribers.length > 0 ? (
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
-                                        {subscribers.map(sub => (
-                                            <div key={sub.id} style={{ padding: '1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                                                <div style={{ fontWeight: 'bold', color: '#1e293b' }}>{sub.email}</div>
-                                                <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem' }}>
-                                                    Signed up: {new Date(sub.date).toLocaleDateString()}
-                                                </div>
+                {activeTab === 'customers' && (
+                    <div className={styles.grid}>
+                        {/* Subscribers Section */}
+                        <div className={styles.card} style={{ gridColumn: '1/-1', marginBottom: '2rem' }}>
+                            <h3 style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem', marginBottom: '1rem' }}>Newsletter Subscribers</h3>
+                            {subscribers.length > 0 ? (
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
+                                    {subscribers.map(sub => (
+                                        <div key={sub.id} style={{ padding: '1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                                            <div style={{ fontWeight: 'bold', color: '#1e293b' }}>{sub.email}</div>
+                                            <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem' }}>
+                                                Signup: {new Date(sub.date).toLocaleDateString()}
                                             </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p style={{ color: '#94a3b8' }}>No subscribers yet.</p>
-                                )}
-                            </div>
-
-
-                        </div>
-                    )
-                }
-
-
-
-                {/* --- FRANCHISE TAB --- */}
-                {
-                    activeTab === 'franchise' && (
-                        <div className={styles.grid}>
-                            {franchiseInquiries.length > 0 ? (
-                                franchiseInquiries.map((inquiry) => (
-                                    <div key={inquiry.id} className={styles.card} style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                                            <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{inquiry.name}</h3>
-                                            <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{new Date(inquiry.date).toLocaleDateString()}</span>
                                         </div>
-                                        <div style={{ color: '#009ceb', fontWeight: '600', fontSize: '0.9rem' }}>{inquiry.email}</div>
-                                        <div style={{ fontSize: '0.9rem', color: '#64748b' }}>📞 {inquiry.phone}</div>
-
-                                        <div style={{ padding: '10px', background: '#f8fafc', borderRadius: '8px', fontSize: '0.85rem' }}>
-                                            <p style={{ margin: '0 0 5px 0' }}><strong>Location:</strong> {inquiry.city}, {inquiry.state}</p>
-                                            <p style={{ margin: '0 0 5px 0' }}><strong>Type:</strong> {inquiry.franchiseType}</p>
-                                            <p style={{ margin: '0' }}><strong>Own Space:</strong> {inquiry.ownSpace === 'yes' ? 'Yes' : 'No'}</p>
-                                        </div>
-
-                                        {inquiry.shopDescription && (
-                                            <p style={{ fontSize: '0.85rem', color: '#475569', fontStyle: 'italic', margin: 0 }}>"{inquiry.shopDescription}"</p>
-                                        )}
-                                    </div>
-                                ))
-                            ) : (
-                                <div className={styles.card} style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem' }}>
-                                    <p style={{ color: '#94a3b8' }}>No franchise inquiries yet.</p>
+                                    ))}
                                 </div>
+                            ) : (
+                                <p style={{ color: '#94a3b8' }}>No subscribers yet.</p>
                             )}
                         </div>
-                    )
-                }
+                    </div>
+                )}
+
+                {/* --- FRANCHISE TAB --- */}
+                {activeTab === 'franchise' && (
+                    <div className={styles.grid}>
+                        {franchiseInquiries.length > 0 ? (
+                            franchiseInquiries.map((inquiry) => (
+                                <div key={inquiry.id} className={styles.card} style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                                        <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{inquiry.name}</h3>
+                                        <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{new Date(inquiry.date).toLocaleDateString()}</span>
+                                    </div>
+                                    <div style={{ color: '#009ceb', fontWeight: '600', fontSize: '0.9rem' }}>{inquiry.email}</div>
+                                    <div style={{ fontSize: '0.9rem', color: '#64748b' }}>📞 {inquiry.phone}</div>
+
+                                    <div style={{ padding: '10px', background: '#f8fafc', borderRadius: '8px', fontSize: '0.85rem' }}>
+                                        <p style={{ margin: '0 0 5px 0' }}><strong>Location:</strong> {inquiry.city}, {inquiry.state}</p>
+                                        <p style={{ margin: '0 0 5px 0' }}><strong>Type:</strong> {inquiry.franchiseType}</p>
+                                        <p style={{ margin: '0' }}><strong>Own Space:</strong> {inquiry.ownSpace === 'yes' ? 'Yes' : 'No'}</p>
+                                    </div>
+
+                                    {inquiry.shopDescription && (
+                                        <p style={{ fontSize: '0.85rem', color: '#475569', fontStyle: 'italic', margin: 0 }}>"{inquiry.shopDescription}"</p>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <div className={styles.card} style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem' }}>
+                                <p style={{ color: '#94a3b8' }}>No franchise inquiries yet.</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+
 
                 {/* Locations Tab */}
                 {activeTab === 'locations' && (
@@ -802,13 +803,15 @@ const AdminDashboard = () => {
                             </button>
                         </div>
 
-                        <div style={{
-                            maxHeight: showLocationForm ? '2000px' : '0',
-                            opacity: showLocationForm ? 1 : 0,
-                            overflow: 'hidden',
-                            transition: 'all 0.5s ease-in-out',
-                            marginBottom: showLocationForm ? '2rem' : 0
-                        }}>
+                        <div
+                            style={{
+                                maxHeight: showLocationForm ? '2000px' : '0',
+                                opacity: showLocationForm ? 1 : 0,
+                                visibility: showLocationForm ? 'visible' : 'hidden',
+                                transition: 'all 0.5s ease-in-out',
+                                marginBottom: showLocationForm ? '2rem' : 0
+                            }}
+                        >
                             <div className={styles.formCard}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                     <h3>{editingLocationId ? 'Edit Location' : 'Add New Location'}</h3>
@@ -818,6 +821,7 @@ const AdminDashboard = () => {
                                         </button>
                                     )}
                                 </div>
+
                                 <div className={styles.splitLayout}>
                                     {/* Left Side: Form */}
                                     <form onSubmit={handleAddLocation} className={styles.form}>
@@ -828,7 +832,6 @@ const AdminDashboard = () => {
                                                 placeholder="Name"
                                                 value={newLocation.name || ''}
                                                 onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
-                                                required
                                                 className={styles.input}
                                             />
                                         </div>
@@ -839,7 +842,6 @@ const AdminDashboard = () => {
                                                 placeholder="Area"
                                                 value={newLocation.area || ''}
                                                 onChange={e => setNewLocation({ ...newLocation, area: e.target.value })}
-                                                required
                                                 className={styles.input}
                                             />
                                         </div>
@@ -880,6 +882,7 @@ const AdminDashboard = () => {
                                         <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '1.5rem', maxWidth: '300px' }}>
                                             Search for the location on Google Maps, copy the link from the browser bar, and paste it into the "Google Maps Link" field.
                                         </p>
+
                                         <button
                                             className={styles.openMapBtn}
                                             onClick={() => window.open('https://www.google.com/maps', '_blank')}
@@ -927,127 +930,123 @@ const AdminDashboard = () => {
                         </div>
                     </div>
                 )}
-
-            </main >
+            </main>
 
             {/* EDIT MODAL */}
-            {
-                editingProduct && (
-                    <div className={styles.modalOverlay} onClick={() => setEditingProduct(null)}>
-                        <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-                            <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Edit Product</h2>
+            {editingProduct && (
+                <div className={styles.modalOverlay} onClick={() => setEditingProduct(null)}>
+                    <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+                        <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Edit Product</h2>
 
-                            <div style={{ display: 'grid', gap: '1.5rem' }}>
-                                {/* Image Edit */}
-                                <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '1rem' }}>
-                                        {editingProduct.images && editingProduct.images.length > 0 ? (
-                                            editingProduct.images.map((imgObj, index) => {
-                                                const url = typeof imgObj === 'string' ? imgObj : imgObj.url;
-                                                const tag = typeof imgObj === 'string' ? '' : imgObj.tag;
-                                                return (
-                                                    <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
-                                                        <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                                                            <img src={url} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => handleRemoveImage(index, 'edit')}
-                                                                style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
-                                                                ✕
-                                                            </button>
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Tag"
-                                                            value={tag}
-                                                            onChange={(e) => handleImageTagChange(index, e.target.value, 'edit')}
-                                                            style={{ width: '80px', fontSize: '0.7rem', padding: '4px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
-                                                        />
+                        <div style={{ display: 'grid', gap: '1.5rem' }}>
+                            {/* Image Edit */}
+                            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '1rem' }}>
+                                    {editingProduct.images && editingProduct.images.length > 0 ? (
+                                        editingProduct.images.map((imgObj, index) => {
+                                            const url = typeof imgObj === 'string' ? imgObj : imgObj.url;
+                                            const tag = typeof imgObj === 'string' ? '' : imgObj.tag;
+                                            return (
+                                                <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+                                                    <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                                        <img src={url} alt={`Product ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveImage(index, 'edit')}
+                                                            style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
+                                                            ✕
+                                                        </button>
                                                     </div>
-                                                );
-                                            })
-                                        ) : (
-                                            // Fallback for legacy data without images array
-                                            <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-                                                <img src={editingProduct.img || 'https://placehold.co/200'} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                            </div>
-                                        )}
-                                        {/* Add Button */}
-                                        <div
-                                            onClick={() => document.getElementById(`edit-file-${editingProduct.id}`).click()}
-                                            style={{ width: '80px', height: '80px', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#f8fafc' }}>
-                                            <span style={{ fontSize: '1.5rem', color: '#94a3b8' }}>+</span>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Tag"
+                                                        value={tag}
+                                                        onChange={(e) => handleImageTagChange(index, e.target.value, 'edit')}
+                                                        style={{ width: '80px', fontSize: '0.7rem', padding: '4px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
+                                                    />
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        // Fallback for legacy data without images array
+                                        <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                            <img src={editingProduct.img || 'https://placehold.co/200'} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                         </div>
+                                    )}
+
+                                    {/* Add Button */}
+                                    <div
+                                        onClick={() => document.getElementById(`edit-file-${editingProduct.id}`).click()}
+                                        style={{ width: '80px', height: '80px', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#f8fafc' }}>
+                                        <span style={{ fontSize: '1.5rem', color: '#94a3b8' }}>+</span>
                                     </div>
-                                    <br />
                                     <input type="file" id={`edit-file-${editingProduct.id}`} style={{ display: 'none' }} onChange={(e) => handleFileUpload(e, 'edit', editingProduct.id)} />
                                 </div>
+                            </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                    <div>
-                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Name</label>
-                                        <input type="text" value={editingProduct.name} onChange={e => setEditingProduct({ ...editingProduct, name: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
-                                    </div>
-                                    <div>
-                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Ingredients</label>
-                                        <input type="text" value={editingProduct.ingredients || ''} onChange={e => setEditingProduct({ ...editingProduct, ingredients: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
-                                    </div>
-                                    <div>
-                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Price (₹)</label>
-                                        <input type="number" value={editingProduct.price} onChange={e => setEditingProduct({ ...editingProduct, price: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
-                                    </div>
-                                </div>
-
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                    <div>
-                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Tag</label>
-                                        <input type="text" value={editingProduct.tag || ''} onChange={e => setEditingProduct({ ...editingProduct, tag: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
-                                    </div>
-                                    <div>
-                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Badge</label>
-                                        <input type="text" value={editingProduct.badge || ''} onChange={e => setEditingProduct({ ...editingProduct, badge: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
-                                    </div>
-                                </div>
-
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div>
-                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Description</label>
-                                    <textarea rows={4} value={editingProduct.description || ''} onChange={e => setEditingProduct({ ...editingProduct, description: e.target.value })} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontFamily: 'inherit' }} />
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Name</label>
+                                    <input type="text" value={editingProduct.name} onChange={e => setEditingProduct({ ...editingProduct, name: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
                                 </div>
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Ingredients</label>
+                                    <input type="text" value={editingProduct.ingredients || ''} onChange={e => setEditingProduct({ ...editingProduct, ingredients: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
+                                </div>
+                            </div>
 
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
-                                    <button onClick={() => setEditingProduct(null)} className={styles.cancelBtn}>Cancel</button>
-                                    <button onClick={handleSaveEdit} className={styles.saveChangesBtn} disabled={isUploading}>
-                                        <SaveIcon />
-                                        {isUploading ? 'Saving...' : 'SAVE CHANGES'}
-                                    </button>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Price (₹)</label>
+                                    <input type="number" value={editingProduct.price} onChange={e => setEditingProduct({ ...editingProduct, price: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
                                 </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Tag</label>
+                                    <input type="text" value={editingProduct.tag || ''} onChange={e => setEditingProduct({ ...editingProduct, tag: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Badge</label>
+                                    <input type="text" value={editingProduct.badge || ''} onChange={e => setEditingProduct({ ...editingProduct, badge: e.target.value })} className={styles.footerField} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', marginBottom: '0.5rem' }}>Description</label>
+                                <textarea rows={4} value={editingProduct.description || ''} onChange={e => setEditingProduct({ ...editingProduct, description: e.target.value })} style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontFamily: 'inherit' }} />
+                            </div>
+
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+                                <button onClick={() => setEditingProduct(null)} className={styles.cancelBtn}>Cancel</button>
+                                <button onClick={handleSaveEdit} className={styles.saveChangesBtn} disabled={isUploading}>
+                                    <SaveIcon />
+                                    {isUploading ? 'Saving...' : 'SAVE CHANGES'}
+                                </button>
                             </div>
                         </div>
                     </div>
-                )
-            }
-
-
+                </div>
+            )}
 
             {/* Image Cropper Modal */}
-            {
-                croppingImage && (
-                    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div style={{ background: 'white', padding: '2rem', borderRadius: '1rem', width: '90%', maxWidth: '600px' }}>
-                            <ImageCropper
-                                imageSrc={croppingImage}
-                                onCropComplete={onCropComplete}
-                                aspect={cropTarget === 'badge' ? 1 : 4 / 3}
-                            />
-                            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                                <button onClick={() => setCroppingImage(null)} style={{ padding: '0.8rem 1.5rem', border: '1px solid #e2e8f0', background: 'white', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Cancel</button>
-                            </div>
+            {croppingImage && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ background: 'white', padding: '2rem', borderRadius: '1rem', width: '90%', maxWidth: '600px' }}>
+                        <ImageCropper
+                            imageSrc={croppingImage}
+                            onCropComplete={onCropComplete}
+                            aspect={cropTarget === 'badge' ? 1 : 4 / 3}
+                        />
+
+                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                            <button onClick={() => setCroppingImage(null)} style={{ padding: '0.8rem 1.5rem', border: '1px solid #e2e8f0', background: 'white', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Cancel</button>
                         </div>
                     </div>
-                )
-            }
-
-        </div >
+                </div>
+            )}
+        </div>
     );
 };
 
